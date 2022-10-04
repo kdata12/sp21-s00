@@ -5,10 +5,10 @@ public class Collatz {
 
     /** Buggy implementation of nextNumber! */
     public static int nextNumber(int n) {
-        if (n % 2 == 0){
+        if (n % 2 == 0) {
             return n / 2;
         } else {
-            return 3*n + 1;
+            return 3 * n + 1;
         }
 
 
@@ -16,12 +16,14 @@ public class Collatz {
 
     public static void main(String[] args) {
         int n = 5;
-
+        System.out.print(n + " ");
         while (n != 1) {
-            System.out.print(n);
             n = nextNumber(n);
-            System.out.print(" ");
+            System.out.print(n + " ");
+        }
+        System.out.println();
         }
     }
-}
+
+
 
