@@ -1,11 +1,14 @@
 package game2048;
 
+import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.Observable;
 
+import static game2048.TestAtLeastOneMoveExists.b;
+
 
 /** The state of a game of 2048.
- *  @author TODO: YOUR NAME HERE
+ *  @author Kevin Vong
  */
 public class Model extends Observable {
     /** Current contents of the board. */
@@ -114,12 +117,185 @@ public class Model extends Observable {
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
 
+        int r = 2;
+        int maxCol = 4;
+        int maxRow = 4;
+        ArrayList<ArrayList<Integer>> bigList = new ArrayList<>();
+        if (side == Side.WEST) {
+            board.setViewingPerspective(Side.WEST);
+        } else if (side == Side.EAST) {
+            board.setViewingPerspective(Side.EAST);
+        } else if (side == Side.SOUTH) {
+            board.setViewingPerspective(Side.SOUTH);
+        }
+
+        while (r != -1) {
+            /* row 2 rules */
+            if (r == 2) {
+                for (int c = 0; c < maxCol; c += 1) {
+
+                    /* skip null values */
+                    if (checkIfSpaceIsNull(board, c, r)) {
+                        continue;
+
+                        /* This location has a tile */
+                    } else {
+                        if (checkAboveNull(board, c, r)) {
+                            board.move(c, r + 1, board.tile(c, r));
+                            changed = true;
+                        }
+
+                        /* check if value of 1 row above is the same */
+                        if (checkValue(board, c, r) && !checkTileChange(c,3,bigList)) {
+                            board.move(c, r + 1, board.tile(c, r));
+                            score += board.tile(c, r + 1).value();
+                            changed = true;
+                            tileChange(c, r + 1, bigList);
+                        }
+                    }
+                }
+            }
+            /* row 1 rules */
+            if (r == 1) {
+                for (int c = 0; c < maxCol; c += 1) {
+
+                    /* TRUE if the current tile has a value */
+                    if (board.tile(c, r) != null) {
+
+                        /* case 1 */
+                        if (board.tile(c,2) == null && board.tile(c,3) == null) {
+                            board.move(c,3,tile(c,r));
+                            continue;
+
+                            /* case 2
+                            * row 2 has a value
+                            * */
+                        } else if (board.tile(c, 2) != null){
+
+                            /* check if row 2 value is the same */
+                            if (checkValue(board,c,r) && !checkTileChange(c, r, bigList)){
+                                board.move(c,2, tile(c,r));
+                                score += board.tile(c, r + 1).value();
+                                changed = true;
+                                tileChange(c, 2, bigList);
+
+                            /* row 2 value is not the same */
+                            } else {
+                                board.tile(c,r);
+                            }
+                        /*case 4 */
+                        } else if (board.tile(c,3).value() == board.tile(c,r).value() && board.tile(c,2) == null) {
+                            board.move(c,3,tile(c,r));
+                            score += board.tile(c, 3).value();
+                            changed = true;
+                            tileChange(c, 2, bigList);
+
+                        } else if (board.tile(c,2) == null && board.tile(c,3).value() != board.tile(c,r).value()) {
+                            board.move(c,2, tile(c,r));
+                            changed = true;
+                        }
+
+                    }
+
+                }
+            }
+            if (r == 0) {
+                for (int c = 0; c < maxCol; c += 1) {
+
+                    /* TRUE if the current tile has a value */
+                    if (board.tile(c,r) != null) {
+
+                        /* case 1 */
+                        if (board.tile(c, 1) == null && board.tile(c, 2) == null && board.tile(c, 3) == null) {
+                            board.move(c,3, tile(c,r));
+
+                            /* case 2 */
+                        } else if (board.tile(c, 1) == null && board.tile(c, 2) == null && board.tile(c, 3) != null) {
+
+                            /* check if row 3 has a value */
+                            if (board.tile(c,r).value() == board.tile(c,3).value() && !checkTileChange(c,3, bigList)) {
+                                board.move(c, 3, tile(c, r));
+                                score += board.tile(c, 3).value();
+                                changed = true;
+                                tileChange(c, 3, bigList);
+                            } else {
+                                board.move(c,2, tile(c,r));
+                            }
+                        /* case 3 */
+                        } else if (board.tile(c,3) != null && board.tile(c,2) != null && board.tile(c,1) != null) {
+                            if (board.tile(c,r) != null && board.tile(c,1).value() == board.tile(c,r).value()) {
+                                board.move(c, 1, tile(c, r));
+                                score += board.tile(c, 1).value();
+                                changed = true;
+                                tileChange(c, 1, bigList);
+                            }
+                        } else if (board.tile(c,1) == null && board.tile(c,2) != null){
+                            if (board.tile(c,2).value() == board.tile(c,r).value()) {
+                                board.move(c, 2, tile(c, r));
+                                score += board.tile(c, 2).value();
+                                changed = true;
+                                tileChange(c, 3, bigList);
+                            } else {
+                                board.move(c,1, tile(c,r));
+                                changed = true;
+                            }
+
+                        }
+                    }
+
+                }
+            }
+            r -= 1;
+        }
+        if (side != Side.NORTH) {
+            board.setViewingPerspective(Side.NORTH);
+        }
+
+        changed = true;
         checkGameOver();
         if (changed) {
             setChanged();
         }
         return changed;
     }
+
+
+    public static void tileChange (int c, int r, ArrayList j) {
+        ArrayList<Integer> number = new ArrayList<>();
+        number.add(c);
+        number.add(r);
+
+        j.add(number);
+
+    }
+    /* returns TRUE if a tile has already been merged */
+    public static boolean checkTileChange(int c, int r, ArrayList j) {
+        ArrayList<Integer> number = new ArrayList<>();
+        number.add(c);
+        number.add(r);
+
+        for (int i = 0; i < j.size(); i += 1) {
+            if (j.get(i).equals(number)) {
+                return true;
+            }
+        }
+        return false;
+
+    }
+    public static boolean checkAboveNull(Board b, int c, int r) {
+        return b.tile(c, r + 1) == null;
+    }
+    /* Check the value of the 1 tile above */
+    public static boolean checkValue(Board board, int c, int r) {
+        if (board.tile(c,r+1) == null) {
+            return false;
+        }
+        if (board.tile(c,r) != null) {
+            return board.tile(c, r).value() == board.tile(c, r + 1).value();
+        }
+        return false;
+    }
+
 
     /** Checks if the game is over and sets the gameOver variable
      *  appropriately.
@@ -138,7 +314,31 @@ public class Model extends Observable {
      * */
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
+
+        int c = 0;
+        int r = 0;
+
+        while (c != 3 || r != 3){
+
+            if (checkIfSpaceIsNull(b, c, r)) {
+                return true;
+            }
+            c += 1;
+            if (c == 3 && r == 3) {
+                return checkIfSpaceIsNull(b, c, r);
+            }
+
+            if (c > 3) {
+                c = 0;
+                r += 1;
+            }
+
+        }
         return false;
+    }
+
+    public static boolean checkIfSpaceIsNull(Board b,int c, int r) {
+        return b.tile(c, r) == null;
     }
 
     /**
@@ -148,9 +348,32 @@ public class Model extends Observable {
      */
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
+
+        int c = 0;
+        int r = 0;
+
+        while (c != 3 || r != 3){
+
+            if (maxTileHelper(b, c, r)) {
+                return true;
+            }
+            c += 1;
+            if (c == 3 && r == 3) {
+                return maxTileHelper(b, c, r);
+            }
+            if (c > 3) {
+                c = 0;
+                r += 1;
+            }
+        }
         return false;
     }
-
+    public static boolean maxTileHelper(Board b,int c, int r) {
+        if (b.tile(c,r) != null){
+            return b.tile(c,r).value() == MAX_PIECE;
+        }
+        return false;
+    }
     /**
      * Returns true if there are any valid moves on the board.
      * There are two ways that there can be valid moves:
@@ -159,9 +382,91 @@ public class Model extends Observable {
      */
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
+
+        /* Check for empty spaces, if there are any, return true */
+        if (emptySpaceExists(b)) {
+            return true;
+        }
+
+        /* check for adjacent tiles with the same value */
+        int c = 0;
+        int r = 0;
+
+
+        while (c < 3 || r < 3) {
+            if (Top(b, c, r)) {
+                return true;
+            }
+            if (Bottom(b, c,r)) {
+                return true;
+            }
+            if (Right(b, c, r)) {
+                return true;
+            }
+            if (Left(b, c, r)) {
+                return true;
+            }
+            c += 1;
+            if (c == 3 && r == 3) {
+                if (Top(b, c, r)) {
+                    return true;
+                }
+                if (Bottom(b, c,r)) {
+                    return true;
+                }
+                if (Right(b, c, r)) {
+                    return true;
+                }
+                if (Left(b, c, r)) {
+                    return true;
+                }
+            }
+            if (c > 3) {
+                c = 0;
+                r += 1;
+            }
+        }
         return false;
     }
+        public static boolean outOfBound(int c, int r) {
+            int maxC = 3;
+            int maxR = 3;
 
+            int minC = 0;
+            int minR = 0;
+
+
+            return c > maxC || r > maxR || c < minC || r < minR;
+        }
+        public static boolean Top(Board b, int c, int r) {
+            if (!outOfBound(c, r + 1)) {
+                return oneMoveHelper(b, c, r, c,r + 1);
+            }
+            return false;
+        }
+        public static boolean Bottom(Board b, int c, int r) {
+            if (!outOfBound(c, r - 1)) {
+                return oneMoveHelper(b, c, r, c, r - 1);
+            }
+            return false;
+        }
+
+        public static boolean Right(Board b,int c, int r) {
+            if (!outOfBound(c+1, r)) {
+                return oneMoveHelper(b, c, r, c+1, r);
+            }
+            return false;
+        }
+
+        public static boolean Left(Board b,int c, int r) {
+            if (!outOfBound(c-1, r)) {
+                return oneMoveHelper(b, c, r, c-1, r );
+            }
+            return false;
+        }
+    public static boolean oneMoveHelper(Board b, int c, int r, int nextC, int nextR) {
+        return b.tile(c, r).value() == b.tile(nextC, nextR).value();
+    }
 
     @Override
      /** Returns the model as a string, used for debugging. */
