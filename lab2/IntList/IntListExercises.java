@@ -14,6 +14,7 @@ public class IntListExercises {
             head.first += c;
             head = head.rest;
         }
+        head.first += c;
     }
 
     /**
@@ -25,12 +26,20 @@ public class IntListExercises {
      */
     public static void setToZeroIfMaxFEL(IntList L) {
         IntList p = L;
-        while (p != null) {
+
+        while (p.rest != null) {
             if (firstDigitEqualsLastDigit(max(p))) {
                 p.first = 0;
             }
             p = p.rest;
         }
+        if (p.rest == null){
+            if (firstDigitEqualsLastDigit(max(p))) {
+                p.first = 0;
+            }
+
+        }
+
     }
 
     /** Returns the max value in the IntList starting at L. */
@@ -51,7 +60,7 @@ public class IntListExercises {
      */
     public static boolean firstDigitEqualsLastDigit(int x) {
         int lastDigit = x % 10;
-        while (x > 10) {
+        while (x >= 10) {
             x = x / 10;
         }
         int firstDigit = x % 10;
@@ -75,8 +84,15 @@ public class IntListExercises {
 
         if (currElemIsPrime) {
             lst.first *= lst.first;
+            squarePrimes(lst.rest);
+            return true;
         }
+        return squarePrimes(lst.rest);
+    }
 
-        return currElemIsPrime || squarePrimes(lst.rest);
+    public static void main(String[] args) {
+        IntList lst2 = IntList.of(1,2,3);
+
+        addConstant(lst2, 3);
     }
 }
