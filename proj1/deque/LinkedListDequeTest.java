@@ -2,6 +2,7 @@ package deque;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import edu.princeton.cs.algs4.StdRandom;
 
 
 /** Performs some basic linked list tests. */
@@ -135,5 +136,21 @@ public class LinkedListDequeTest {
         }
 
         */
+    }
+
+    @Test
+    public void LinkedListGet() {
+        LinkedListDeque<Integer> expected = new LinkedListDeque<>(3);
+        LinkedListDeque<Integer> test = new LinkedListDeque<>(3);
+
+        int x = 10000;
+        for (int i = 0; i < x; i++) {
+            expected.addFirst(i);
+            test.addFirst(i);
+        }
+
+        int randomInt = StdRandom.uniform(1,x);
+        assertEquals(expected.get(randomInt), test.get(randomInt));
+
     }
 }
