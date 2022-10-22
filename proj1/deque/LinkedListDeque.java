@@ -1,14 +1,16 @@
 package deque;
 
-public class LinkedListDeque <Item>{
+public class LinkedListDeque <T> implements deque <T>{
 
     private class IntNode {
-        public Item item;
+        public T item;
         public IntNode next;
+        public IntNode prev;
 
-        public IntNode (Item i, IntNode n) {
+        public IntNode (T i, IntNode n, IntNode p) {
             item = i;
             next = n;
+            prev = p;
         }
     }
 
@@ -17,51 +19,133 @@ public class LinkedListDeque <Item>{
 
     /** sentinel node */
     public LinkedListDeque() {
-        sentinel = new IntNode(null, null);
+        sentinel = new IntNode(null, null, null);
+        sentinel.next = sentinel.prev;
+        sentinel.prev = sentinel;
         size = 0;
     }
 
-    public LinkedListDeque(Item x){
-        sentinel = new IntNode(null, null);
-        sentinel.next = new IntNode(x, null);
+    public LinkedListDeque(T x){
+        sentinel = new IntNode(null, null, null);
+        sentinel.next = new IntNode(x, sentinel, sentinel);
+        sentinel.prev = sentinel;
         size = 1;
     }
 
-    public void addFirst(Item x) {
-        sentinel.next = new IntNode(x, sentinel.next);
+    @Override
+    public void addFirst(T x) {
+        if (size > 0) {
+            sentinel.next = new IntNode(x, sentinel.next, sentinel);
+            sentinel.next.next.prev = sentinel.next;
+            size += 1;
+            return;
+        }
+        sentinel.next = new IntNode(x, sentinel, sentinel);
+        sentinel.prev = sentinel.next;
         size += 1;
     }
 
-    public Item removeFirst() {
-        return null;
+    @Override
+    public void addLast(T x) {
+        sentinel.prev.next = new IntNode(x, sentinel, sentinel.prev);
+        sentinel.prev = sentinel.prev.next;
+
+        size += 1;
     }
 
-    public Item removeLast() {
+    @Override
+    public T removeFirst() {
+        if (size == 0) {
+            return null;
+        }
+        IntNode k = sentinel.next;
+        sentinel.next = sentinel.next.next;
+        sentinel.next.prev = sentinel;
+        size -= 1;
 
-        return null;
+        return k.item;
     }
 
+    @Override
+    public T removeLast() {
+        if (size == 0) {
+            return null;
+        }
+        IntNode k = sentinel.prev;
+        sentinel.prev.prev.next = sentinel;
+        sentinel.prev = sentinel.prev.prev;
+        size -= 1;
+        return k.item;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    @Override
     public int size() {
         return size;
     }
 
     /** get item at the given index */
-    public Item get(int n) {
+    @Override
+    public T get(int n) {
         int i = 0;
-        IntNode p = sentinel;
+        IntNode p = sentinel.next;
 
-        while(p.next != null && i != n ) {
-            p = p.next;
-            i += 1;
+        while (i != n) {
+            if (p.next != sentinel) {
+                p = p.next;
+                i++;
+            } else {
+                return null;
+            }
         }
-
-        if (i == n) {
-            return p.item;
-        }
-        return null;
-
+        return p.item;
     }
 
+    @Override
+    public void printDeque() {
+        IntNode p = sentinel.next;
+        while (p.next != sentinel) {
+            System.out.print(p.item + " ");
+            p = p.next;
+        }
+        if (p.next == sentinel){
+            System.out.println(p.item + " ");
+        }
+        System.out.println();
+    }
 
+    public IntNode sentinelNext() {
+        return sentinel.next;
+    }
+
+    public Iterable <T> iterable() {
+        return null;
+    }
+
+    public boolean equals(Object o){
+        return false;
+    }
+
+    public T lastItem() {
+        return sentinel.prev.item;
+    }
+    public T firstItem() {
+        if (size == 0) {
+            return null;
+        }
+        return sentinel.next.item;
+    }
+
+    public static void main(String[] args) {
+        LinkedListDeque<Integer> L1 = new LinkedListDeque<Integer>();
+        for (int i = 0; i <= 20; i++) {
+            L1.addLast(i);
+        }
+        System.out.println(L1.lastItem());
+    }
 }
 
