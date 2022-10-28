@@ -17,11 +17,9 @@ public class ArrayDequeTest {
         list.addLast("Tyna");
         list.removeLast();
         list.addFirst("Tyna");
-
         assertEquals("Tyna", list.get(0));
         assertEquals("Kevin's dog", list.removeLast());
         assertEquals("Tyna", list.removeFirst());
-
         assertEquals("Kevin", list.removeFirst());
         assertEquals(0, list.size());
 
@@ -60,7 +58,6 @@ public class ArrayDequeTest {
         list.addLast(3);
         list.addLast(2);
         list.addLast(1);
-
         for (int i = 4; i <= n; i++) {
             list.addFirst(i);
         }
@@ -76,7 +73,6 @@ public class ArrayDequeTest {
         int N = 100_000;
         for (int i = 0; i < N; i ++) {
             int operationNumber = StdRandom.uniform(1, 5);
-
             if (operationNumber == 1) {
                 list.addLast(i);
             } else if (operationNumber == 2) {
@@ -108,21 +104,17 @@ public class ArrayDequeTest {
         list.addLast(0);
         list.addLast(1);
         list.addLast(2);
-
         for(int i = 3; i < 50; i++) {
             list.addFirst(i);
         }
-
         // get first
         assertEquals(49, (int) list.get(0));
-
         // get last items
         assertEquals(2, (int) list.get(list.size()-1));
         assertEquals(1, (int) list.get(48));
         assertEquals(0, (int) list.get(47));
         assertEquals(3, (int) list.get(46));
         assertEquals(4, (int) list.get(45));
-
         // get randoms
         assertEquals(40, (int) list.get(9));
         assertEquals(37, (int) list.get(12));
@@ -167,7 +159,6 @@ public class ArrayDequeTest {
 
         for (int i = 0; i < n; i++) {
             int opNum = StdRandom.uniform(1,6);
-
             if (opNum == 1){
                 list.addLast(i);
             } else if (opNum == 2) {
@@ -182,5 +173,27 @@ public class ArrayDequeTest {
                 assertEquals(null, list.get(2));
             }
         }
+    }
+
+    @Test
+    public void arrayEquals1() {
+        ArrayDeque<Integer> l1 = new ArrayDeque<Integer>();
+        ArrayDeque<Integer> l2 = new ArrayDeque<Integer>();
+        for(int i = 0; i < 100; i++) {
+            l1.addLast(i);
+            l2.addLast(i);
+        }
+        assertEquals(true, l1.equals(l2));
+    }
+
+    @Test
+    public void arrayEquals2() {
+        ArrayDeque<Integer> l1 = new ArrayDeque<Integer>();
+        ArrayDeque<Integer> l2 = new ArrayDeque<Integer>();
+        for(int i = 0; i < 10; i++) {
+            l1.addLast(i);
+        }
+        l2.addLast(1);
+        assertEquals(false, l1.equals(l2));
     }
 }

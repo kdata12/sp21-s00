@@ -257,6 +257,8 @@ public class Model extends Observable {
             setChanged();
         }
         return changed;
+
+        //bug: board is full but move still exists
     }
 
 

@@ -1,6 +1,8 @@
 package deque;
 
-public class ArrayDeque <T> implements deque<T> {
+import java.util.Iterator;
+
+public class ArrayDeque <T> implements deque<T>, Iterable<T> {
     private int size;
     private T[] items;
     private int frontPointer = -1;
@@ -172,6 +174,27 @@ public class ArrayDeque <T> implements deque<T> {
         }
     }
      */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (o instanceof ArrayDeque otherArray) {
+            if (otherArray.size != this.size) {
+                return false;
+            }
+            for (int i = 0; i < this.size; i++) {
+                if (this.get(i) != otherArray.get(i)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 
     private void removeRearItem() {
         if (frontPointer == -1 && rearPointer == -1) {
@@ -240,8 +263,25 @@ public class ArrayDeque <T> implements deque<T> {
         return items[rearPointer];
     }
 
+    public Iterator<T> iterator(){
+        return new ArrayDequeIterator();
+    }
+
+    public class ArrayDequeIterator implements Iterator<T> {
+        private int wizPos;
+
+        public boolean hasNext() {
+            return wizPos < size;
+        }
+
+        public T next() {
+            T item = get(wizPos);
+            wizPos += 1;
+            return item;
+        }
+    }
+
     public static void main(String[] args) {
-        ArrayDeque<Integer> a1 = new ArrayDeque<Integer>();
-        a1.printDeque();
+
     }
 }
