@@ -180,18 +180,19 @@ public class ArrayDeque <T> implements Deque<T>, Iterable<T> {
         if (o == null) {
             return false;
         }
-        if (o instanceof ArrayDeque otherArray) {
-            if (otherArray.size != this.size) {
+        if (!(o instanceof Deque)) {
+            return false;
+        }
+        Deque<T> oa = (Deque<T>) o;
+        if (oa.size() != this.size()) {
+            return false;
+        }
+        for (int i = 0; i < size; i += 1) {
+            if (!(oa.get(i).equals(this.get(i)))) {
                 return false;
             }
-            for (int i = 0; i < this.size; i++) {
-                if (this.get(i) != otherArray.get(i)) {
-                    return false;
-                }
-            }
-            return true;
         }
-        return false;
+        return true;
     }
 
     private void removeRearItem() {
