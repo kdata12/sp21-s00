@@ -1,6 +1,6 @@
 package deque;
 
-public class LinkedListDeque <T> implements deque <T>{
+public class LinkedListDeque <T> implements Deque <T>{
 
     private class IntNode {
         public T item;

@@ -1,7 +1,7 @@
 package gh2;
 
 // TODO: uncomment the following import once you're ready to start this portion
-import deque.deque;
+import deque.Deque;
 import deque.ArrayDeque;
 import deque.LinkedListDeque;
 import edu.princeton.cs.algs4.StdRandom;
@@ -17,7 +17,7 @@ public class GuitarString {
     private static final double DECAY = .996; // energy decay factor
 
     /* Buffer for storing sound data. */
-    private deque<Double> buffer = new ArrayDeque<Double>();
+    private Deque<Double> buffer = new ArrayDeque<Double>();
 
     /* Create a guitar string of the given frequency.  */
     public GuitarString(double frequency) {
