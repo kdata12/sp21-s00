@@ -15,8 +15,6 @@ public interface Deque <T>{
 
      T removeFirst();
 
-     boolean equals(Object o);
-
      T removeLast();
 
      T get(int index);

@@ -115,7 +115,6 @@ public class ArrayDeque <T> implements Deque<T>, Iterable<T> {
     @Override
     public void printDeque() {
         int i = frontPointer;
-
         if (size == 0) {
             System.out.println("Array deque is empty.");
             return;
@@ -174,7 +173,6 @@ public class ArrayDeque <T> implements Deque<T>, Iterable<T> {
         }
     }
      */
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -240,11 +238,9 @@ public class ArrayDeque <T> implements Deque<T>, Iterable<T> {
     @Override
     public T removeFirst() {
         //usageOptimizer();
-
         T frontItem = items[frontPointer];
         items[frontPointer] = null;
         removeFrontItem();
-
         return frontItem;
     }
 

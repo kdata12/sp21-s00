@@ -56,9 +56,7 @@ public class MaxArrayDeque <T> extends ArrayDeque <T>{
         };
 
         MaxArrayDeque mad = new MaxArrayDeque(comp);
-
         int n = 99;
-
         for (int i = n; i >= 0; i--) {
             mad.addFirst(i);
         }
@@ -78,7 +76,6 @@ public class MaxArrayDeque <T> extends ArrayDeque <T>{
         mad2.addFirst("front");
         mad2.addLast("middle");
         mad2.addLast("back");
-
 
         System.out.println(mad2.max());
         System.out.println(mad2.max(comp2));

@@ -3,8 +3,7 @@ package gh2;
 // TODO: uncomment the following import once you're ready to start this portion
 import deque.Deque;
 import deque.ArrayDeque;
-import deque.LinkedListDeque;
-import edu.princeton.cs.algs4.StdRandom;
+
 
 // TODO: maybe more imports
 
@@ -31,7 +30,6 @@ public class GuitarString {
             buffer.addLast(0.0);
         }
     }
-
 
     /* Pluck the guitar string by replacing the buffer with white noise. */
     public void pluck() {
