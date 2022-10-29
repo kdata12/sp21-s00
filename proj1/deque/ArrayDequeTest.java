@@ -32,7 +32,7 @@ public class ArrayDequeTest {
         for (int i = 0; i <= n; i++) {
             list.addLast(i);
         }
-        assertEquals(100, list.printRear().intValue());
+        assertEquals(100, list.get(n).intValue());
         for (int i = 0; i < 101; i++) {
             list.removeLast();
         }
@@ -164,10 +164,10 @@ public class ArrayDequeTest {
             } else if (opNum == 2) {
                 list.addFirst(i);
             } else if (opNum == 3 && !list.isEmpty()){
-                int k = list.printFront();
+                int k = list.get(0);
                 assertEquals(k , (int) list.removeFirst());
             } else if (opNum == 4 && !list.isEmpty()) {
-                int k = list.printRear();
+                int k = list.get(list.size()-1);
                 assertEquals(k , (int) list.removeLast());
             } else if (opNum == 5 && list.isEmpty()) {
                 assertEquals(null, list.get(2));

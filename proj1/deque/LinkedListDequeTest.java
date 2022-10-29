@@ -155,7 +155,7 @@ public class LinkedListDequeTest {
         expected.addFirst(4);
         expected.removeLast();
 
-        assertEquals(expected.firstItem(), expected.removeFirst());
+        assertEquals(expected.get(0), expected.removeFirst());
     }
 
     @Test
@@ -171,15 +171,18 @@ public class LinkedListDequeTest {
                 assertEquals(i, (int) expected.get(0));
             } else if (operationNumber == 2) {
                 expected.addLast(i);
-                assertEquals(i, (int) expected.lastItem());
+                assertEquals(i, (int) expected.get(expected.size()-1));
+                assertEquals(i, (int) expected.getRecursive(expected.size()-1));
+
             } else if (operationNumber == 3) {
                 if (expected.size() > 0) {
-                    assertEquals(expected.lastItem(), expected.get(expected.size() - 1));
+                    assertEquals(expected.get(expected.size()-1), expected.get(expected.size() - 1));
+                    assertEquals(expected.getRecursive(expected.size()-1), expected.getRecursive(expected.size() - 1));
                 }
-            } else if (operationNumber == 4) {
-                assertEquals(expected.firstItem(),expected.removeFirst());
-            } else if (operationNumber == 5) {
-                assertEquals(expected.lastItem(), expected.removeLast());
+            } else if (operationNumber == 4 && !expected.isEmpty()) {
+                assertEquals(expected.get(0),expected.removeFirst());
+            } else if (operationNumber == 5 && !expected.isEmpty()) {
+                assertEquals(expected.get(expected.size()-1), expected.removeLast());
             }
         }
     }
@@ -204,5 +207,14 @@ public class LinkedListDequeTest {
             l2.addLast(i);
         }
         assertEquals(true, l1.equals(l2));
+    }
+
+    @Test
+    public void getRecursiveTest() {
+        LinkedListDeque<Integer> l1 = new LinkedListDeque<>();
+        for(int i = 0; i < 100; i++) {
+            l1.addLast(i);
+        }
+        assertEquals(45, (int) l1.getRecursive(45));
     }
 }

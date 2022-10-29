@@ -2,7 +2,7 @@ package deque;
 
 import java.util.Iterator;
 
-public class ArrayDeque <T> implements Deque<T>, Iterable<T> {
+public class ArrayDeque <T> implements Deque<T>, Iterable<T>{
     private int size;
     private T[] items;
     private int frontPointer = -1;
@@ -16,20 +16,20 @@ public class ArrayDeque <T> implements Deque<T>, Iterable<T> {
 
     private void resizeTraditional(int capacity) {
         T[] newArray = (T[]) new Object[capacity];
-        System.arraycopy(items,0, newArray,0, size);
+        System.arraycopy(items, 0, newArray, 0, size);
         items = newArray;
     }
 
     private void resizeMiddle(int capacity) {
         T[] newArray = (T[]) new Object[capacity];
-        System.arraycopy(items,0, newArray,0, rearPointer+1);
-        System.arraycopy(items,frontPointer, newArray,newArray.length-(size-frontPointer), size-frontPointer);
-        frontPointer = newArray.length-(size-frontPointer);
+        System.arraycopy(items, 0, newArray, 0, rearPointer + 1);
+        System.arraycopy(items,frontPointer, newArray,newArray.length - (size - frontPointer), size - frontPointer);
+        frontPointer = newArray.length - (size - frontPointer);
         items = newArray;
 
     }
 
-    public void resize(int capacity){
+    private void resize(int capacity){
         if (frontPointer == 0 && rearPointer == items.length - 1) {
             resizeTraditional(capacity);
         } else if (frontPointer == rearPointer + 1) {
@@ -128,10 +128,6 @@ public class ArrayDeque <T> implements Deque<T>, Iterable<T> {
         System.out.println();
     }
 
-    /** Returns the item from the back of the list. */
-    public T getLast() {
-        return items[size - 1];
-    }
     /** Gets the ith item in the list (0 is the front). */
     @Override
     public T get(int i){
@@ -245,26 +241,11 @@ public class ArrayDeque <T> implements Deque<T>, Iterable<T> {
         return frontItem;
     }
 
-    public int itemLength() {
-        return items.length;
-    }
-
-    public T printFront() {
-        return items[frontPointer];
-    }
-
-    public T printRear() {
-        if (rearPointer == -1) {
-            return null;
-        }
-        return items[rearPointer];
-    }
-
     public Iterator<T> iterator(){
         return new ArrayDequeIterator();
     }
 
-    public class ArrayDequeIterator implements Iterator<T> {
+    private class ArrayDequeIterator implements Iterator<T> {
         private int wizPos;
 
         public boolean hasNext() {
@@ -276,9 +257,5 @@ public class ArrayDeque <T> implements Deque<T>, Iterable<T> {
             wizPos += 1;
             return item;
         }
-    }
-
-    public static void main(String[] args) {
-
     }
 }

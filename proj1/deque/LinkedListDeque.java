@@ -87,11 +87,11 @@ public class LinkedListDeque <T> implements Deque <T>, Iterable<T>{
 
     /** get item at the given index */
     @Override
-    public T get(int n) {
+    public T get(int index) {
         int i = 0;
         IntNode p = sentinel.next;
 
-        while (i != n) {
+        while (i != index) {
             if (p.next != sentinel) {
                 p = p.next;
                 i++;
@@ -100,6 +100,25 @@ public class LinkedListDeque <T> implements Deque <T>, Iterable<T>{
             }
         }
         return p.item;
+    }
+
+    private T getRecursiveHelper(int index, IntNode node, int start) {
+        if (start == index) {
+            return node.item;
+        }
+        start += 1;
+        return getRecursiveHelper(index, node.next, start);
+    }
+
+    public T getRecursive(int index) {
+        IntNode node = sentinel.next;
+        int startIndex = 0;
+
+        if (index < 0) {
+            return null;
+        }
+
+        return getRecursiveHelper(index, node, startIndex);
     }
 
     @Override
@@ -115,16 +134,12 @@ public class LinkedListDeque <T> implements Deque <T>, Iterable<T>{
         System.out.println();
     }
 
-    public IntNode sentinelNext() {
-        return sentinel.next;
-    }
-
     @Override
     public Iterator<T> iterator(){
         return new LinkedListDequeIterator();
     }
 
-    public class LinkedListDequeIterator implements Iterator<T> {
+    private class LinkedListDequeIterator implements Iterator<T> {
         private int wizPos;
 
         public boolean hasNext() {
@@ -160,22 +175,16 @@ public class LinkedListDeque <T> implements Deque <T>, Iterable<T>{
         return true;
     }
 
-    public T lastItem() {
+    private T lastItem() {
         return sentinel.prev.item;
     }
-    public T firstItem() {
+
+    private T firstItem() {
         if (size == 0) {
             return null;
         }
         return sentinel.next.item;
     }
 
-    public static void main(String[] args) {
-        LinkedListDeque<Integer> L1 = new LinkedListDeque<Integer>();
-        for (int i = 0; i <= 20; i++) {
-            L1.addLast(i);
-        }
-        System.out.println(L1.lastItem());
-    }
 }
 
