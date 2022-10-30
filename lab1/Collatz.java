@@ -10,8 +10,6 @@ public class Collatz {
         } else {
             return 3 * n + 1;
         }
-
-
     }
 
     public static void main(String[] args) {
