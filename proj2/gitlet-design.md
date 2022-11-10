@@ -1,6 +1,6 @@
 # Gitlet Design Document
 
-**Name**:
+**Name**: Phuc Vong
 
 ## Classes and Data Structures
 
