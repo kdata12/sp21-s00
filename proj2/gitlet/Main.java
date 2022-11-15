@@ -1,4 +1,5 @@
 package gitlet;
+import gitlet.Repository;
 
 /** Driver class for Gitlet, a subset of the Git version-control system.
  *  @author TODO
@@ -13,12 +14,15 @@ public class Main {
         String firstArg = args[0];
         switch(firstArg) {
             case "init":
-                // TODO: handle the `init` command
+                Repository.init();
                 break;
             case "add":
-                // TODO: handle the `add [filename]` command
+                Repository.add(args[1]);
                 break;
-            // TODO: FILL THE REST IN
+            case "readinit":
+                String hash = args[1];
+                // prints out commit file message
+                System.out.println(Repository.readMessage(hash));
         }
     }
 }

@@ -4,6 +4,8 @@
 
 ## Classes and Data Structures
 
+- Completed init in the repository class. 
+
 ### Class 1
 
 #### Fields

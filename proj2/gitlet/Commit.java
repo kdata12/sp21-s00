@@ -24,12 +24,36 @@ public class Commit implements Serializable {
     /** The message of this Commit. */
     private String message;
     private String date;
-    private Commit parent;
+    private String parent;
 
-    public Commit(String message, String date, Commit parent){
+
+    public Commit(String message, String date, String parent){
         this.message = message;
         this.date = date;
         this.parent = parent;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getParent() {
+        return parent;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
+    }
 }
