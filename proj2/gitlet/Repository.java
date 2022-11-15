@@ -42,34 +42,18 @@ public class Repository implements Serializable {
         STAGING_AREA.mkdir();
         serializeAndHash(init, HEAD);
     }
-    public static void serialized(Serializable obj, File file){
-        File newFile = join(file, "test serialized");
-        writeObject(newFile, obj);
-    }
 
     /* This function serializes a commit object, then create a SHA-1 hash
     for the object, saves the SHA-1 hash to a file. */
-    public static void serializeAndHash(Commit object, File file) {
-        byte[] object_to_bytes = serialize(object);
-        String sha1Object = sha1(object_to_bytes);
+    public static void serializeAndHash(Serializable object, File file) {
+        byte[] bytes = serialize(object);
+        String sha1Object = sha1(bytes);
         // file renamed to its SHA-1 hash.
         File objectFile = join(file, sha1Object);
-        writeContents(objectFile, object);
-    }
-    public static void serializeAndHash(Blobs object, File file) {
-        byte[] object_to_bytes = serialize(object);
-        String sha1Object = sha1(object_to_bytes);
-        File objectFile = join(file, sha1Object);
-        writeObject(objectFile, object);
-    }
-    public static void serializeAndHash(TreeMap object, File file) {
-        byte[] object_to_bytes = serialize(object);
-        String sha1Object = sha1(object_to_bytes);
-        File objectFile = join(file, sha1Object);
-        writeObject(objectFile, object);
+        writeContents(objectFile, bytes);
     }
 
-    /**
+    /** 
      * This function deserializes the commit object then
      * returns the commit object's message
      * @param hash -> the SHA-1 hash "name" of the file
