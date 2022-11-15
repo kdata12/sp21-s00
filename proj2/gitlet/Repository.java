@@ -26,8 +26,6 @@ public class Repository implements Serializable {
     public static final File HEAD = join(GITLET_DIR, "HEAD");
     /** creates staging area for staged for addition and removal*/
     public static final File STAGING_AREA = join(GITLET_DIR, "STAGING_AREA");
-    public static final File STAGE_FOR_REMOVAL = join(STAGING_AREA, "STAGING_AREA");
-
 
     /* Initialize a gitlet repository by creating a .gitlet file
     * and create an initial commit to be serialized and hashed
@@ -37,9 +35,16 @@ public class Repository implements Serializable {
             System.out.println("A Gitlet version-control system already exists in the current directory.");
             return;
         }
-        Commit initial = new Commit("initial commit", "00:00:00 UTC, Thursday, 1 January 1970",
+        Commit init = new Commit("initial commit", "00:00:00 UTC, Thursday, 1 January 1970",
                                     null);
-        serializeAndHash(initial, HEAD);
+        GITLET_DIR.mkdir();
+        HEAD.mkdir();
+        STAGING_AREA.mkdir();
+        serializeAndHash(init, HEAD);
+    }
+    public static void serialized(Serializable obj, File file){
+        File newFile = join(file, "test serialized");
+        writeObject(newFile, obj);
     }
 
     /* This function serializes a commit object, then create a SHA-1 hash
@@ -47,8 +52,9 @@ public class Repository implements Serializable {
     public static void serializeAndHash(Commit object, File file) {
         byte[] object_to_bytes = serialize(object);
         String sha1Object = sha1(object_to_bytes);
+        // file renamed to its SHA-1 hash.
         File objectFile = join(file, sha1Object);
-        writeObject(objectFile, object);
+        writeContents(objectFile, object);
     }
     public static void serializeAndHash(Blobs object, File file) {
         byte[] object_to_bytes = serialize(object);

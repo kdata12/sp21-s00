@@ -1,7 +1,6 @@
 package gitlet;
 
 // TODO: any imports you need here
-import static gitlet.Utils.*;
 
 import java.io.Serializable;
 import java.util.Date; // TODO: You'll likely use this in this class
@@ -25,7 +24,6 @@ public class Commit implements Serializable {
     private String message;
     private String date;
     private String parent;
-
 
     public Commit(String message, String date, String parent){
         this.message = message;

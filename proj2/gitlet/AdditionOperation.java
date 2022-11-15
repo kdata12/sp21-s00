@@ -12,6 +12,7 @@ public class AdditionOperation implements Serializable{
     public static TreeMap<String, String> removalTree = new TreeMap<>();
 
     public static final File STAGE_FOR_ADDITION = join(Repository.STAGING_AREA, "STAGING_AREA");
+    public static final File STAGE_FOR_REMOVAL = join(Repository.STAGING_AREA, "STAGING_AREA");
 
     /* serializes and hash additionTree to STAGE_FOR_ADDITION folder */
     public static void mapBlobToAdditionTree(){
