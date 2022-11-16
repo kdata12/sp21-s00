@@ -3,6 +3,8 @@ package gitlet;
 import java.io.File;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.TreeMap;
+
 import static gitlet.Utils.*;
 
 public class Blobs implements Serializable {
@@ -26,7 +28,6 @@ public class Blobs implements Serializable {
 
     /**
      * This creates a blob for a file.
-     * @param filename
      */
     public Blobs(String filename) {
         this.fileName = filename;
@@ -47,13 +48,26 @@ public class Blobs implements Serializable {
     /* save blob object. Uses SHA1 as file name
     ex. hello.saveBlob()
      */
-    public void saveBlob() {
+    public void saveBlob() throws java.io.IOException{
+        startDirectory();
         Blobs blob = new Blobs(this.fileName, this.fileContent, this.blobSHA1);
         File blobFile = new File(BLOB_FOLDER, this.getBlobSHA1());
         blobFile.createNewFile();
         writeObject(blobFile, blob);
     }
 
+    /*
+    Creates a blob directory
+     */
+    public static void startDirectory() {
+        if (!BLOB_FOLDER.exists()) {
+            BLOB_FOLDER.mkdir();
+        }
+    }
+
+    /*
+     retrieve Blobs object from a file
+     */
     public static Blobs retrieve(File blobFile) {
         return Utils.readObject(blobFile, Blobs.class);
     }

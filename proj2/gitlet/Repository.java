@@ -1,6 +1,7 @@
 package gitlet;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
@@ -43,7 +44,7 @@ public class Repository implements Serializable {
         serializeAndHash(init, HEAD);
     }
 
-    /* This function serializes a commit object, then create a SHA-1 hash
+    /* This function serializes a SERIALIZABLE object, then create a SHA-1 hash
     for the object, saves the SHA-1 hash to a file. */
     public static void serializeAndHash(Serializable object, File file) {
         byte[] bytes = serialize(object);
@@ -51,6 +52,11 @@ public class Repository implements Serializable {
         // file renamed to its SHA-1 hash.
         File objectFile = join(file, sha1Object);
         writeContents(objectFile, bytes);
+    }
+    public static void serializeAndHashFile(Serializable object, File file) {
+        byte[] bytes = serialize(object);
+        // file renamed to its SHA-1 hash.
+        writeContents(file, bytes);
     }
 
     /**
@@ -74,22 +80,11 @@ public class Repository implements Serializable {
 
     /* Takes in a file name and add it to the stage addition
        treemap object in the STAGE_FOR_ADDITION directory */
-    public static void add(File file_name) {
+    public static void add(String file_name) throws IOException {
+        Blobs blob = new Blobs(file_name);
+        blob.saveBlob();
+        additionTree.put(file_name, blob.getBlobSHA1());
+        saveAdditionTree();
     }
-    public static class blobMaintanence implements Serializable {
-        public TreeMap<String, String> blobMapping = new TreeMap<>();
-
-        public void createBlob(String file_name){
-            Blobs blob_object = new Blobs(file_name);
-            blob_object.saveFile(file_name);
-            blob_object.serializeBlob();
-
-            // puts "hello.txt" = blob_object's SHA-1 hash to treemap
-            blobMapping.put(file_name, sha1(blob_object));
-            AdditionOperation.additionTree.put(file_name, sha1(blob_object));
-        }
-
-    }
-
 
 }
