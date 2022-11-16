@@ -1,6 +1,8 @@
 package gitlet;
 import gitlet.Repository;
 
+import java.io.File;
+
 /** Driver class for Gitlet, a subset of the Git version-control system.
  *  @author TODO
  */
@@ -17,7 +19,7 @@ public class Main {
                 Repository.init();
                 break;
             case "add":
-                Repository.add(args[1]);
+                Repository.add(newFile);
                 break;
             case "readinit":
                 String hash = args[1];

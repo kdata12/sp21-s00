@@ -8,19 +8,29 @@ import static gitlet.Utils.*;
 public class Blobs implements Serializable {
     /* creates a blob directory inside .gitlet */
     public static final File blob = Utils.join(Repository.GITLET_DIR, "blob");
-    public String filename;
-    public String fileContent;
+    /**
+     * Name of staged file
+     */
+    private String fileName;
 
-    public Blobs(String name) {
-        filename = name;
-    }
+    /**
+     * Content of staged file
+     */
+    private byte[] fileContent;
 
-    /** Reads the file content into byte, create a SHA-1
-     * hash name from the file content and saves it to
-     * instance variable fileContent */
-    public void saveFile(File file) {
-        byte[] file_to_byte = readContents(file);
-        this.fileContent = sha1(file_to_byte);
+    /**
+     * SHA1 of blob object
+     */
+    private String blobSHA1;
+
+    /**
+     * This creates a blob for a file
+     * @param filename
+     */
+    public Blobs(String filename) {
+        this.fileName = filename;
+        this.fileContent = Utils.readContents(Utils.join(".", filename));
+        this.blobSHA1 = Utils.sha1(this.fileContent);
     }
 
     /* serializes the blob object into file blob */

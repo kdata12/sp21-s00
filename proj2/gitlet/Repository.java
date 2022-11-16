@@ -53,7 +53,7 @@ public class Repository implements Serializable {
         writeContents(objectFile, bytes);
     }
 
-    /** 
+    /**
      * This function deserializes the commit object then
      * returns the commit object's message
      * @param hash -> the SHA-1 hash "name" of the file
@@ -74,17 +74,17 @@ public class Repository implements Serializable {
 
     /* Takes in a file name and add it to the stage addition
        treemap object in the STAGE_FOR_ADDITION directory */
-    public static void add(String file_name) {
+    public static void add(File file_name) {
         blobMaintanence addOperation = new blobMaintanence();
-        addOperation.createBlob(file_name, STAGE_FOR_ADDITION);
+        addOperation.createBlob(file_name);
         mapBlobToAdditionTree();
     }
     public static class blobMaintanence implements Serializable {
         public TreeMap<String, String> blobMapping = new TreeMap<>();
 
-        public void createBlob(String file_name, File file){
+        public void createBlob(String file_name){
             Blobs blob_object = new Blobs(file_name);
-            blob_object.saveFile(file);
+            blob_object.saveFile(file_name);
             blob_object.serializeBlob();
 
             // puts "hello.txt" = blob_object's SHA-1 hash to treemap
