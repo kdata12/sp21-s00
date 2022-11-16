@@ -75,9 +75,6 @@ public class Repository implements Serializable {
     /* Takes in a file name and add it to the stage addition
        treemap object in the STAGE_FOR_ADDITION directory */
     public static void add(File file_name) {
-        blobMaintanence addOperation = new blobMaintanence();
-        addOperation.createBlob(file_name);
-        mapBlobToAdditionTree();
     }
     public static class blobMaintanence implements Serializable {
         public TreeMap<String, String> blobMapping = new TreeMap<>();

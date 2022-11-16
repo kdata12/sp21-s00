@@ -7,7 +7,8 @@ import static gitlet.Utils.*;
 
 public class Blobs implements Serializable {
     /* creates a blob directory inside .gitlet */
-    public static final File blob = Utils.join(Repository.GITLET_DIR, "blob");
+    public static final File BLOB_FOLDER = Utils.join(Repository.GITLET_DIR, "blob");
+
     /**
      * Name of staged file
      */
@@ -24,25 +25,48 @@ public class Blobs implements Serializable {
     private String blobSHA1;
 
     /**
-     * This creates a blob for a file
+     * This creates a blob for a file.
      * @param filename
      */
     public Blobs(String filename) {
         this.fileName = filename;
         this.fileContent = Utils.readContents(Utils.join(".", filename));
+        // file's SHA1, NOT blob's SHA1
         this.blobSHA1 = Utils.sha1(this.fileContent);
     }
 
-    /* serializes the blob object into file blob */
-    public void serializeBlob(){
-        Repository.serializeAndHash(this, blob);
+    /**
+     * This creates a blob object constructor.
+     */
+    public Blobs(String filename, byte[] fileContent, String blobSHA1) {
+        this.blobSHA1 = blobSHA1;
+        this.fileContent = fileContent;
+        this.fileName = filename;
+    }
+
+    /* save blob object. Uses SHA1 as file name
+    ex. hello.saveBlob()
+     */
+    public void saveBlob() {
+        Blobs blob = new Blobs(this.fileName, this.fileContent, this.blobSHA1);
+        File blobFile = new File(BLOB_FOLDER, this.getBlobSHA1());
+        blobFile.createNewFile();
+        writeObject(blobFile, blob);
+    }
+
+    public static Blobs retrieve(File blobFile) {
+        return Utils.readObject(blobFile, Blobs.class);
     }
 
     public String getFilename() {
-        return filename;
+        return this.fileName;
     }
 
-    public String getFileContent() {
-        return fileContent;
+    public byte[] getFileContent() {
+        return this.fileContent;
+    }
+
+    public String getBlobSHA1() {
+        return this.blobSHA1;
     }
 }
