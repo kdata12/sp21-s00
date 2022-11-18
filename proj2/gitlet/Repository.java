@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static gitlet.AdditionOperation.*;
+import static gitlet.Staging.*;
 import static gitlet.Utils.*;
 
 /** Represent a gitlet repository. Includes many commands
@@ -55,8 +55,11 @@ public class Repository implements Serializable {
     }
     public static void serializeAndHashFile(Serializable object, File file) {
         byte[] bytes = serialize(object);
-        // file renamed to its SHA-1 hash.
         writeContents(file, bytes);
+    }
+    public static String giveSHA1(Serializable object) {
+        byte[] bytes = serialize(object);
+        return sha1(bytes);
     }
 
     /**
@@ -65,18 +68,6 @@ public class Repository implements Serializable {
      * @param hash -> the SHA-1 hash "name" of the file
      * @return the commit object message
      */
-    public static String readMessage(String hash) {
-        return readCommitMessage(commitFromFile(hash));
-    }
-
-    private static Commit commitFromFile(String hash) {
-        File test = join(HEAD, hash);
-        return readObject(test, Commit.class);
-    }
-
-    private static String readCommitMessage(Commit commit){
-        return commit.getMessage();
-    }
 
     /* Takes in a file name and add it to the stage addition
        treemap object in the Addition file */
@@ -91,7 +82,7 @@ public class Repository implements Serializable {
             addHelper(file_name);
             return;
         }
-        
+
         //checks if staging area has a duplicate
         if (!checkDuplicate(file_name)) {
             /* file have different content, remove old file, create new blob */
@@ -99,6 +90,7 @@ public class Repository implements Serializable {
             addHelper(file_name);
         }
     }
+
     /** Takes in a file name and add it to the stage addition
      treemap object in the Addition file */
     private static void addHelper(String file_name) throws IOException {

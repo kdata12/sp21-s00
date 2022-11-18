@@ -25,7 +25,7 @@ public class Main {
             case "readinit":
                 String hash = args[1];
                 // prints out commit file message
-                System.out.println(Repository.readMessage(hash));
+                System.out.println(Commit.readMessage(hash));
         }
     }
 }

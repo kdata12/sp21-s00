@@ -9,7 +9,7 @@ import static gitlet.Repository.*;
 import static gitlet.Utils.join;
 import static gitlet.Utils.sha1;
 
-public class AdditionOperation implements Serializable{
+public class Staging implements Serializable{
     public static TreeMap<String, String> additionTree = new TreeMap<>();
     public static TreeMap<String, String> removalTree = new TreeMap<>();
 
