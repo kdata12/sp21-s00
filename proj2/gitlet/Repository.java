@@ -81,10 +81,21 @@ public class Repository implements Serializable {
     /* Takes in a file name and add it to the stage addition
        treemap object in the STAGE_FOR_ADDITION directory */
     public static void add(String file_name) throws IOException {
-        Blobs blob = new Blobs(file_name);
-        blob.saveBlob();
-        additionTree.put(file_name, blob.getBlobSHA1());
-        saveAdditionTree();
+        //checks if file is in current working directory
+        if (!plainFilenamesIn(CWD).contains(file_name)) {
+            System.out.println("File does not exist.");
+            return;
+        }
+        //checks if staging area has a duplicate
+        if (checkDuplicate(file_name) == false) {
+            /* file have different content, remove old file, create new blob */
+            removeOldVersion(file_name);
+            Blobs blob = new Blobs(file_name);
+            blob.saveBlob();
+            additionTree.put(file_name, blob.getBlobSHA1());
+            saveAdditionTree();
+        }
+
     }
 
 }
