@@ -44,6 +44,22 @@ public class Repository implements Serializable {
         serializeAndHash(init, HEAD);
     }
 
+    public static void commit(String message) {
+        //TODO: Construct a commit tree that keeps track of current commit so I
+        // can pass it the commit constructor
+
+        //create commit object
+        //Commit newCommit = new Commit(message, )
+
+        //deserialize staging treemap to get file name and file content
+
+        //add files in staging to commit object's files hashtable
+
+        //adjust head and master pointer
+
+        //serialize commit object
+    }
+
     /* This function serializes a SERIALIZABLE object, then create a SHA-1 hash
     for the object, saves the SHA-1 hash to a file. */
     public static void serializeAndHash(Serializable object, File file) {
@@ -62,12 +78,6 @@ public class Repository implements Serializable {
         return sha1(bytes);
     }
 
-    /**
-     * This function deserializes the commit object then
-     * returns the commit object's message
-     * @param hash -> the SHA-1 hash "name" of the file
-     * @return the commit object message
-     */
 
     /* Takes in a file name and add it to the stage addition
        treemap object in the Addition file */

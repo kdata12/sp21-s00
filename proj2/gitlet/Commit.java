@@ -4,7 +4,9 @@ package gitlet;
 
 import java.io.File;
 import java.io.Serializable;
+import java.text.spi.DateFormatProvider;
 import java.util.*;
+import java.util.Date;
 
 import static gitlet.Utils.*;
 import static gitlet.Repository.*;
@@ -28,10 +30,12 @@ public class Commit implements Serializable {
     private String message;
 
     /** The exact date of commit */
-    private String date;
+    private Date date;
 
     /** This object parent's commit's SHA1 */
     private String parent;
+
+    private String dateString;
 
     /** This object's SHA1 */
     private String SHA1;
@@ -39,16 +43,26 @@ public class Commit implements Serializable {
     /** Hastable with String fileName and Blobs blob*/
     private Hashtable<String, Blobs> files;
 
-    public Commit(String message, String date, String parent){
+
+
+    /** COMMIT OBJECT CONSTRUCTOR */
+
+    public Commit(String message, String dateString, String parent){
         this.message = message;
-        this.date = date;
+        this.date = new Date();
+        this.dateString = dateString;
         this.parent = parent;
         this.files = new Hashtable<>();
         this.SHA1 = giveSHA1(this);
     }
 
-    public void addFile(String fileName, Blobs blob) {
-        this.files.put(fileName, blob);
+    public Commit(String message, String parent){
+        this.message = message;
+        this.date = new Date();
+        this.dateString = this.date.toString();
+        this.parent = parent;
+        this.files = new Hashtable<>();
+        this.SHA1 = giveSHA1(this);
     }
 
 
@@ -59,7 +73,7 @@ public class Commit implements Serializable {
         return message;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
@@ -71,7 +85,7 @@ public class Commit implements Serializable {
         this.message = message;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -83,6 +97,7 @@ public class Commit implements Serializable {
 
     /* COMMIT OBJECT OPERATIONS */
 
+    /** read commit's message */
     public static String readMessage(String hash) {
         return readCommitMessage(commitFromFile(hash));
     }
@@ -94,5 +109,9 @@ public class Commit implements Serializable {
 
     private static String readCommitMessage(Commit commit){
         return commit.getMessage();
+    }
+
+    public void addFile(String fileName, Blobs blob) {
+        this.files.put(fileName, blob);
     }
 }
