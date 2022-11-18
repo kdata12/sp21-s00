@@ -32,10 +32,6 @@ public class AdditionOperation implements Serializable{
      *  Returns true if both file content are the same.
      */
     public static boolean checkDuplicate(String fileName) {
-        if (!additionTree.containsKey(fileName)) {
-            return false;
-        }
-
         byte[] fileContent = Utils.readContents(Utils.join(".", fileName));
         String fileSHA1 = sha1(fileContent);
 
@@ -46,11 +42,8 @@ public class AdditionOperation implements Serializable{
         return false;
     }
 
-    public static void removeOldVersion(String fileName) {
-        // both file's content are different
-        if (!checkDuplicate(fileName)) {
-            additionTree.remove(fileName);
-        }
+    public static void removeFile(String fileName) {
+        additionTree.remove(fileName);
     }
 
 
