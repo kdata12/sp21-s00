@@ -47,6 +47,12 @@ public class Commit implements Serializable {
 
     /** COMMIT OBJECT CONSTRUCTOR */
 
+    /**
+     * Instantiate a commit node
+     * @param message
+     * @param dateString
+     * @param parent
+     */
     public Commit(String message, String dateString, String parent){
         this.message = message;
         this.date = new Date();
@@ -70,15 +76,15 @@ public class Commit implements Serializable {
     /* GETTERS AND SETTERS */
 
     public String getMessage() {
-        return message;
+        return this.message;
     }
 
     public Date getDate() {
-        return date;
+        return this.date;
     }
 
     public String getParent() {
-        return parent;
+        return this.parent;
     }
 
     public void setMessage(String message) {
@@ -97,7 +103,7 @@ public class Commit implements Serializable {
 
     /* COMMIT OBJECT OPERATIONS */
 
-    /** read commit's message */
+    /** Reads commit message */
     public static String readMessage(String hash) {
         return readCommitMessage(commitFromFile(hash));
     }
@@ -111,7 +117,19 @@ public class Commit implements Serializable {
         return commit.getMessage();
     }
 
+    /** Adds the file and the associated blob object to the
+     * commit object hashtable.
+     */
     public void addFile(String fileName, Blobs blob) {
         this.files.put(fileName, blob);
     }
+
+    /** Load a commit that was serialized
+     * @param sha1 commit SHA-1 hash
+     */
+    public static Commit load(String sha1) {
+        File commitFile = join(HEAD, sha1);
+        return readObject(commitFile, Commit.class);
+    }
+
 }

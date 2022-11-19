@@ -5,29 +5,17 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.TreeMap;
 import static gitlet.Repository.*;
-
-import static gitlet.Utils.join;
-import static gitlet.Utils.sha1;
+import static gitlet.Utils.*;
 
 public class Staging implements Serializable{
     public static TreeMap<String, String> additionTree = new TreeMap<>();
     public static TreeMap<String, String> removalTree = new TreeMap<>();
 
-    public static final File STAGE_FOR_ADDITION = join(Repository.STAGING_AREA, "Addition");
-    public static final File STAGE_FOR_REMOVAL = join(Repository.STAGING_AREA, "Removal");
-
     /* serializes and hash additionTree to STAGE_FOR_ADDITION folder */
-    public static void saveAdditionTree() throws IOException {
-        startDirectory();
-        serializeAndHashFile(additionTree, STAGE_FOR_ADDITION);
+    public static void saveAdditionTree() {
+        writeObject(STAGE_FOR_ADDITION, additionTree);
     }
 
-    public static void startDirectory() throws IOException {
-        if (!STAGE_FOR_ADDITION.exists() || !STAGE_FOR_REMOVAL.exists()) {
-            STAGE_FOR_ADDITION.createNewFile();
-            STAGE_FOR_REMOVAL.createNewFile();
-        }
-    }
     /** Check whether if a file in the staging area have the same content.
      *  Returns true if both file content are the same.
      */
@@ -45,8 +33,5 @@ public class Staging implements Serializable{
     public static void removeFile(String fileName) {
         additionTree.remove(fileName);
     }
-
-
-
 
 }

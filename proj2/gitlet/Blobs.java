@@ -66,7 +66,7 @@ public class Blobs implements Serializable {
     }
 
     /*
-     retrieve Blobs object from a file
+     returns Blobs object from a file
      */
     public static Blobs retrieve(File blobFile) {
         return Utils.readObject(blobFile, Blobs.class);

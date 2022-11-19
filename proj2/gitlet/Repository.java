@@ -19,28 +19,57 @@ public class Repository implements Serializable {
      * comment above them describing what that variable represents and how that
      * variable is used. We've provided two examples for you.
      */
+
     /** The current working directory. */
     public static final File CWD = new File(System.getProperty("user.dir"));
+
     /** The .gitlet directory. */
     public static final File GITLET_DIR = join(CWD, ".gitlet");
+
     /** The head folder containing the head commit */
     public static final File HEAD = join(GITLET_DIR, "HEAD");
+
     /** creates staging area for staged for addition and removal*/
     public static final File STAGING_AREA = join(GITLET_DIR, "STAGING_AREA");
+
+    /** directory that holds commit and blob objects */
+    public static final File OBJECTS_FOLDER = join(GITLET_DIR, "objects");
+
+    /** directory for commit object */
+    public static final File COMMITS_OBJECT = join(OBJECTS_FOLDER, "commits");
+
+    /** directory for storing the most recent commit hash */
+    public static final File REFS_FOLDER = join(OBJECTS_FOLDER, "refs");
+
+    /** file for storing treemap data structure that tracks file:blob */
+    public static final File STAGE_FOR_ADDITION = join(STAGING_AREA, "Addition");
+
+    /** file for storing treemap data structure that tracks file:blob */
+    public static final File STAGE_FOR_REMOVAL = join(STAGING_AREA, "Removal");
+
+
+    public static void setupPersistence() throws IOException {
+        GITLET_DIR.mkdir();
+        HEAD.mkdir();
+        STAGING_AREA.mkdir();
+        OBJECTS_FOLDER.mkdir();
+        COMMITS_OBJECT.mkdir();
+        REFS_FOLDER.mkdir();
+        STAGE_FOR_ADDITION.createNewFile();
+        STAGE_FOR_REMOVAL.createNewFile();
+    }
 
     /* Initialize a gitlet repository by creating a .gitlet file
     * and create an initial commit to be serialized and hashed
     * into directory HEAD */
-    public static void init(){
+    public static void init() throws IOException {
         if (GITLET_DIR.exists()) {
             System.out.println("A Gitlet version-control system already exists in the current directory.");
             return;
         }
         Commit init = new Commit("initial commit", "00:00:00 UTC, Thursday, 1 January 1970",
                                     null);
-        GITLET_DIR.mkdir();
-        HEAD.mkdir();
-        STAGING_AREA.mkdir();
+        setupPersistence();
         serializeAndHash(init, HEAD);
     }
 
@@ -67,12 +96,9 @@ public class Repository implements Serializable {
         String sha1Object = sha1(bytes);
         // file renamed to its SHA-1 hash.
         File objectFile = join(file, sha1Object);
-        writeContents(objectFile, bytes);
+        writeObject(objectFile, bytes);
     }
-    public static void serializeAndHashFile(Serializable object, File file) {
-        byte[] bytes = serialize(object);
-        writeContents(file, bytes);
-    }
+
     public static String giveSHA1(Serializable object) {
         byte[] bytes = serialize(object);
         return sha1(bytes);

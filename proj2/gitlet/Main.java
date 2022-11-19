@@ -26,6 +26,9 @@ public class Main {
                 String hash = args[1];
                 // prints out commit file message
                 System.out.println(Commit.readMessage(hash));
+                break;
+            case "readtree":
+                break;
         }
     }
 }
