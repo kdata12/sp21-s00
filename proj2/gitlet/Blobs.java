@@ -9,7 +9,7 @@ import static gitlet.Utils.*;
 
 public class Blobs implements Serializable {
     /* creates a blob directory inside .gitlet */
-    public static final File BLOB_FOLDER = Utils.join(Repository.GITLET_DIR, "blob");
+
 
     /**
      * Name of staged file
@@ -49,20 +49,10 @@ public class Blobs implements Serializable {
     ex. hello.saveBlob()
      */
     public void saveBlob() throws java.io.IOException{
-        startDirectory();
         Blobs blob = new Blobs(this.fileName, this.fileContent, this.blobSHA1);
-        File blobFile = new File(BLOB_FOLDER, this.getBlobSHA1());
+        File blobFile = new File(Repository.BLOB_FOLDER, this.getBlobSHA1());
         blobFile.createNewFile();
         writeObject(blobFile, blob);
-    }
-
-    /*
-    Creates a blob directory
-     */
-    public static void startDirectory() {
-        if (!BLOB_FOLDER.exists()) {
-            BLOB_FOLDER.mkdir();
-        }
     }
 
     /*

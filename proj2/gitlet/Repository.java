@@ -47,6 +47,8 @@ public class Repository implements Serializable {
     /** file for storing treemap data structure that tracks file:blob */
     public static final File STAGE_FOR_REMOVAL = join(STAGING_AREA, "Removal");
 
+    public static final File BLOB_FOLDER = Utils.join(Repository.GITLET_DIR, "blob");
+
 
     public static void setupPersistence() throws IOException {
         GITLET_DIR.mkdir();
@@ -57,6 +59,7 @@ public class Repository implements Serializable {
         REFS_FOLDER.mkdir();
         STAGE_FOR_ADDITION.createNewFile();
         STAGE_FOR_REMOVAL.createNewFile();
+        BLOB_FOLDER.mkdir();
     }
 
     /* Initialize a gitlet repository by creating a .gitlet file

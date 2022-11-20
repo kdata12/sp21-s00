@@ -33,41 +33,42 @@ public class Commit implements Serializable {
     private Date date;
 
     /** This object parent's commit's SHA1 */
-    private String parent;
+    private String[] parent;
 
     private String dateString;
 
     /** This object's SHA1 */
     private String SHA1;
 
-    /** Hastable with String fileName and Blobs blob*/
-    private Hashtable<String, Blobs> files;
+    /** HashMap with String SHA 1 of staged files and
+     *  SHA-1 of blob */
+    private TreeMap<String, String> snapshot;
 
 
 
     /** COMMIT OBJECT CONSTRUCTOR */
 
-    /**
-     * Instantiate a commit node
-     * @param message
-     * @param dateString
-     * @param parent
-     */
+    /** Only for init command */
     public Commit(String message, String dateString, String parent){
         this.message = message;
         this.date = new Date();
         this.dateString = dateString;
-        this.parent = parent;
-        this.files = new Hashtable<>();
+        this.parent[0] = parent;
+        this.snapshot = new TreeMap<>();
         this.SHA1 = giveSHA1(this);
     }
 
-    public Commit(String message, String parent){
+    /**
+     * Instantiate a commit node
+     * @param message Commit message
+     * @param parent Parent of Commit
+     */
+    public Commit(String message, String parent, TreeMap<String, String> snap){
         this.message = message;
         this.date = new Date();
         this.dateString = this.date.toString();
-        this.parent = parent;
-        this.files = new Hashtable<>();
+        this.parent[0] = parent;
+        this.snapshot = snap;
         this.SHA1 = giveSHA1(this);
     }
 
@@ -84,7 +85,7 @@ public class Commit implements Serializable {
     }
 
     public String getParent() {
-        return this.parent;
+        return this.parent[0];
     }
 
     public void setMessage(String message) {
@@ -96,7 +97,7 @@ public class Commit implements Serializable {
     }
 
     public void setParent(String parent) {
-        this.parent = parent;
+        this.parent[0] = parent;
     }
 
 
@@ -120,8 +121,8 @@ public class Commit implements Serializable {
     /** Adds the file and the associated blob object to the
      * commit object hashtable.
      */
-    public void addFile(String fileName, Blobs blob) {
-        this.files.put(fileName, blob);
+    public void addFile(String fileName, String blobSHA1) {
+        this.snapshot.put(fileName, blobSHA1);
     }
 
     /** Load a commit that was serialized
@@ -131,5 +132,7 @@ public class Commit implements Serializable {
         File commitFile = join(HEAD, sha1);
         return readObject(commitFile, Commit.class);
     }
+
+
 
 }
