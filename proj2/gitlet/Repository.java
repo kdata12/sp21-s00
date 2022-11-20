@@ -70,8 +70,11 @@ public class Repository implements Serializable {
             System.out.println("A Gitlet version-control system already exists in the current directory.");
             return;
         }
+
+        //TODO: Create a sentinel commit for initial commit???
+
         Commit init = new Commit("initial commit", "00:00:00 UTC, Thursday, 1 January 1970",
-                                    null);
+                                    "u8923uriufhias991239814hjdh");
         setupPersistence();
         serializeAndHash(init, HEAD);
     }

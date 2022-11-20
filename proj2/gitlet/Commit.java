@@ -44,6 +44,7 @@ public class Commit implements Serializable {
      *  SHA-1 of blob */
     private TreeMap<String, String> snapshot;
 
+    public static String headSHA1;
 
 
     /** COMMIT OBJECT CONSTRUCTOR */
@@ -98,6 +99,18 @@ public class Commit implements Serializable {
 
     public void setParent(String parent) {
         this.parent[0] = parent;
+    }
+
+    /** To be used after commiting, this will for setting
+     *  the class's Head commit SHA1.
+     * @param SHA1
+     */
+    public static void setHeadSHA1(String SHA1) {
+        headSHA1 = SHA1;
+    }
+
+    public static String getHeadSHA1() {
+        return Commit.headSHA1;
     }
 
 
