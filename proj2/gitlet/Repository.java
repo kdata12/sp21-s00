@@ -83,6 +83,15 @@ public class Repository implements Serializable {
         //TODO: Construct a commit tree that keeps track of current commit so I
         // can pass it the commit constructor
 
+        Commit headCommit = Head.load();
+        String headCommitSHA1 = headCommit.getSHA1();
+        TreeMap<String, String> snapshot = headCommit.getSnapshot();
+        updateSnapshot();
+
+        Commit newCommit = new Commit(message, headCommitSHA1, snapshot);
+
+
+
         //create commit object
         //Commit newCommit = new Commit(message, )
 
@@ -93,6 +102,17 @@ public class Repository implements Serializable {
         //adjust head and master pointer
 
         //serialize commit object
+    }
+
+    /** Updates the current snapshot using staging files mapping if
+     * there were any changes / addition / removal made.
+     */
+    public static void updateSnapshot() {
+
+        Commit headCommit = Head.load();
+        TreeMap<String, String> snapshot = headCommit.getSnapshot();
+        TreeMap<String, String> stagingFiles = additionTree;
+        snapshot.putAll(stagingFiles);
     }
 
     /* This function serializes a SERIALIZABLE object, then create a SHA-1 hash

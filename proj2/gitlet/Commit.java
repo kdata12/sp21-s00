@@ -113,6 +113,14 @@ public class Commit implements Serializable {
         return Commit.headSHA1;
     }
 
+    public String getSHA1() {
+        return this.SHA1;
+    }
+
+    public TreeMap<String, String> getSnapshot() {
+        return this.snapshot;
+    }
+
 
 
     /* COMMIT OBJECT OPERATIONS */

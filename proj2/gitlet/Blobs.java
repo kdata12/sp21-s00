@@ -8,8 +8,6 @@ import java.util.TreeMap;
 import static gitlet.Utils.*;
 
 public class Blobs implements Serializable {
-    /* creates a blob directory inside .gitlet */
-
 
     /**
      * Name of staged file
