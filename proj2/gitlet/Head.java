@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -37,6 +38,11 @@ public class Head implements Serializable{
     public static void updateHead(Commit commit) {
         File newHead = join(HEAD, Commit.getHeadSHA1());
         writeObject(newHead, commit);
+    }
+
+    public static void deleteHead(String currHeadSHA1) {
+        File currHead = join(HEAD, currHeadSHA1);
+        currHead.delete();
     }
 
 

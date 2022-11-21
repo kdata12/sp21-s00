@@ -58,7 +58,7 @@ public class Dog implements Serializable{
      */
     public void saveDog() {
         File newdog = Utils.join(DOG_FOLDER, this.name);
-        writeObject(newdog, this);
+        writeObject(newdog, this);c
     }
 
     @Override

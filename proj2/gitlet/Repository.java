@@ -81,8 +81,6 @@ public class Repository implements Serializable {
     }
 
     public static void commit(String message) throws IOException {
-        //TODO: Construct a commit tree that keeps track of current commit so I
-        // can pass it the commit constructor
 
         Commit headCommit = Head.load();
         String headCommitSHA1 = headCommit.getSHA1();
@@ -91,9 +89,10 @@ public class Repository implements Serializable {
 
         Commit newCommit = new Commit(message, headCommitSHA1, snapshot);
 
+        Head.deleteHead(Commit.getHeadSHA1());
         Commit.setHeadSHA1(newCommit.getSHA1());
         Head.updateHead(newCommit);
-
+        
         serializeAndHash(newCommit, COMMITS_OBJECT);
     }
 

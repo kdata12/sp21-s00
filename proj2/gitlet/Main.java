@@ -29,6 +29,8 @@ public class Main {
                 break;
             case "readtree":
                 break;
+            case "commit":
+                Repository.commit(args[1]);
         }
     }
 }
