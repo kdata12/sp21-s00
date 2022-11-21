@@ -76,13 +76,13 @@ public class Repository implements Serializable {
         Commit init = new Commit("initial commit", "00:00:00 UTC, Thursday, 1 January 1970");
         setupPersistence();
 
-        Commit.headSHA1 = init.getSHA1();
+        init.setHeadSHA1(init.getSHA1());
         saveCommit(init, HEAD);
     }
 
     public static void commit(String message) throws IOException {
 
-        Commit headCommit = Head.load();
+        Commit headCommit = Head.load(new Commit("hi", "123"));
         String headCommitSHA1 = headCommit.getSHA1();
         TreeMap<String, String> snapshot = headCommit.getSnapshot();
         updateSnapshot();
@@ -91,7 +91,6 @@ public class Repository implements Serializable {
 
         Head.updateHead(newCommit);
         //Head.deleteHead(Commit.getHeadSHA1());
-        Commit.setHeadSHA1(newCommit.getSHA1());
 
         serializeAndHash(newCommit, COMMITS_OBJECT);
     }
@@ -101,7 +100,7 @@ public class Repository implements Serializable {
      */
     public static void updateSnapshot() {
 
-        Commit headCommit = Head.load();
+        Commit headCommit = Head.load(new Commit("sda", "123"));
         TreeMap<String, String> snapshot = headCommit.getSnapshot();
         TreeMap<String, String> stagingFiles = additionTree;
         snapshot.putAll(stagingFiles);

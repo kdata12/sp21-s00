@@ -30,13 +30,13 @@ public class Head implements Serializable{
     /** Load the commit object from head directory
      * ex. Head.load() -> return Commit
      */
-    public static Commit load() {
-        File commit = join(HEAD, Commit.getHeadSHA1());
+    public static Commit load(Commit c) {
+        File commit = join(HEAD, c.getHeadSHA1());
         return readObject(commit, Commit.class);
     }
 
     public static void updateHead(Commit commit) {
-        File currHead = join(HEAD, Commit.getHeadSHA1());
+        File currHead = join(HEAD, commit.getHeadSHA1());
         writeContents(currHead, commit);
     }
 
