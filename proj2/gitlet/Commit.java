@@ -46,6 +46,8 @@ public class Commit implements Serializable {
 
     public static String headSHA1;
 
+    private String tempHead;
+
 
     /** COMMIT OBJECT CONSTRUCTOR */
 
@@ -56,6 +58,7 @@ public class Commit implements Serializable {
         this.dateString = dateString;
         this.snapshot = new TreeMap<>();
         this.SHA1 = giveSHA1(this);
+        this.tempHead = headSHA1;
     }
 
     /**
@@ -105,7 +108,7 @@ public class Commit implements Serializable {
      * @param SHA1
      */
     public static void setHeadSHA1(String SHA1) {
-        headSHA1 = SHA1;
+        Commit.headSHA1 = SHA1;
     }
 
     public static String getHeadSHA1() {
@@ -114,6 +117,10 @@ public class Commit implements Serializable {
 
     public String getSHA1() {
         return this.SHA1;
+    }
+
+    public void setSHA1(String SHA1){
+        this.SHA1 = SHA1;
     }
 
     public TreeMap<String, String> getSnapshot() {
@@ -126,16 +133,20 @@ public class Commit implements Serializable {
 
     /** Reads commit message */
     public static String readMessage(String hash) {
-        return readCommitMessage(commitFromFile(hash));
+        return commitFromFile(hash).getMessage();
+    }
+
+    public static String readCommitSHA1(String hash) {
+        return commitFromFile(hash).getSHA1();
+    }
+
+    public static String readHEAD(String hash) {
+        return commitFromFile(hash).tempHead;
     }
 
     private static Commit commitFromFile(String hash) {
         File test = join(HEAD, hash);
         return readObject(test, Commit.class);
-    }
-
-    private static String readCommitMessage(Commit commit){
-        return commit.getMessage();
     }
 
     /** Adds the file and the associated blob object to the
@@ -152,7 +163,5 @@ public class Commit implements Serializable {
         File commitFile = join(HEAD, sha1);
         return readObject(commitFile, Commit.class);
     }
-
-
 
 }

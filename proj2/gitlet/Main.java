@@ -31,6 +31,13 @@ public class Main {
                 break;
             case "commit":
                 Repository.commit(args[1]);
+                break;
+            case "readSHA":
+                System.out.println(Commit.readCommitSHA1(args[1]));
+                break;
+            case "readHEAD":
+                System.out.println(Commit.readHEAD(args[1]));
+                break;
         }
     }
 }

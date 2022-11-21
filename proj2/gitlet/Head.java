@@ -36,15 +36,13 @@ public class Head implements Serializable{
     }
 
     public static void updateHead(Commit commit) {
-        File newHead = join(HEAD, Commit.getHeadSHA1());
-        writeObject(newHead, commit);
+        File currHead = join(HEAD, Commit.getHeadSHA1());
+        writeContents(currHead, commit);
     }
 
-    public static void deleteHead(String currHeadSHA1) {
+    public static void deleteHead(String currHeadSHA1, Commit commit) {
         File currHead = join(HEAD, currHeadSHA1);
-        currHead.delete();
+        writeObject(currHead, commit);
     }
-
-
 
 }

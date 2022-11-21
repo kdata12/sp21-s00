@@ -76,8 +76,8 @@ public class Repository implements Serializable {
         Commit init = new Commit("initial commit", "00:00:00 UTC, Thursday, 1 January 1970");
         setupPersistence();
 
-        Commit.setHeadSHA1(init.getSHA1());
-        serializeAndHash(init, HEAD);
+        Commit.headSHA1 = init.getSHA1();
+        saveCommit(init, HEAD);
     }
 
     public static void commit(String message) throws IOException {
@@ -89,10 +89,10 @@ public class Repository implements Serializable {
 
         Commit newCommit = new Commit(message, headCommitSHA1, snapshot);
 
-        Head.deleteHead(Commit.getHeadSHA1());
-        Commit.setHeadSHA1(newCommit.getSHA1());
         Head.updateHead(newCommit);
-        
+        //Head.deleteHead(Commit.getHeadSHA1());
+        Commit.setHeadSHA1(newCommit.getSHA1());
+
         serializeAndHash(newCommit, COMMITS_OBJECT);
     }
 
@@ -114,7 +114,12 @@ public class Repository implements Serializable {
         String sha1Object = sha1(bytes);
         // file renamed to its SHA-1 hash.
         File objectFile = join(file, sha1Object);
-        writeObject(objectFile, bytes);
+        writeContents(objectFile, bytes);
+    }
+
+    public static void saveCommit(Commit commit, File file) {
+        File objectFile = join(file, commit.getSHA1());
+        writeObject(objectFile, commit);
     }
 
     public static String giveSHA1(Serializable object) {

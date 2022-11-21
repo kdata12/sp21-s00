@@ -7,20 +7,25 @@ import java.util.Date;
 import java.util.TreeMap;
 
 public class playground {
+
+    public static String world;
+    public String name;
+
+    public playground(String name) {
+        this.name = name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public static void setWorld(String world) {
+        playground.world = world;
+    }
+
     public static void main(String[] args) {
-        TreeMap<String, Integer> fun = new TreeMap<>();
-        fun.put("dog", 5);
-        fun.put("cat", 2);
-        fun.put("otter", 3);
-        fun.put("cow", 10);
-
-        TreeMap<String, Integer> update = new TreeMap<>();
-        update.put("dog", 7);
-
-
-        fun.putAll(update);
-
-        System.out.println(fun);
-
+        playground p = new playground("pablo");
+        setWorld(p.name);
+        System.out.println(p.world);
     }
 }
