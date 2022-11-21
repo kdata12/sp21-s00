@@ -3,12 +3,16 @@ package gitlet;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import static gitlet.Repository.HEAD;
+import static gitlet.Repository.serializeAndHash;
 import static gitlet.Staging.*;
 import static gitlet.Utils.*;
+import static gitlet.Utils.plainFilenamesIn;
 
 /** The Head commit is the commit node at the
  *  very edge of the commit tree. This class
@@ -30,8 +34,9 @@ public class Head implements Serializable{
         return readObject(commit, Commit.class);
     }
 
-    public static void updateHead() {
-
+    public static void updateHead(Commit commit) {
+        File newHead = join(HEAD, Commit.getHeadSHA1());
+        writeObject(newHead, commit);
     }
 
 

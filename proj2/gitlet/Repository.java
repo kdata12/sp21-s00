@@ -73,13 +73,14 @@ public class Repository implements Serializable {
 
         //TODO: Create a sentinel commit for initial commit???
 
-        Commit init = new Commit("initial commit", "00:00:00 UTC, Thursday, 1 January 1970",
-                                    "u8923uriufhias991239814hjdh");
+        Commit init = new Commit("initial commit", "00:00:00 UTC, Thursday, 1 January 1970");
         setupPersistence();
+
+        Commit.setHeadSHA1(init.getSHA1());
         serializeAndHash(init, HEAD);
     }
 
-    public static void commit(String message) {
+    public static void commit(String message) throws IOException {
         //TODO: Construct a commit tree that keeps track of current commit so I
         // can pass it the commit constructor
 
@@ -90,18 +91,10 @@ public class Repository implements Serializable {
 
         Commit newCommit = new Commit(message, headCommitSHA1, snapshot);
 
+        Commit.setHeadSHA1(newCommit.getSHA1());
+        Head.updateHead(newCommit);
 
-
-        //create commit object
-        //Commit newCommit = new Commit(message, )
-
-        //deserialize staging treemap to get file name and file content
-
-        //add files in staging to commit object's files hashtable
-
-        //adjust head and master pointer
-
-        //serialize commit object
+        serializeAndHash(newCommit, COMMITS_OBJECT);
     }
 
     /** Updates the current snapshot using staging files mapping if

@@ -50,11 +50,10 @@ public class Commit implements Serializable {
     /** COMMIT OBJECT CONSTRUCTOR */
 
     /** Only for init command */
-    public Commit(String message, String dateString, String parent){
+    public Commit(String message, String dateString){
         this.message = message;
         this.date = new Date();
         this.dateString = dateString;
-        this.parent[0] = parent;
         this.snapshot = new TreeMap<>();
         this.SHA1 = giveSHA1(this);
     }
