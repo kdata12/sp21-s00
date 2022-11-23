@@ -70,21 +70,20 @@ public class Repository implements Serializable {
             System.out.println("A Gitlet version-control system already exists in the current directory.");
             return;
         }
+        setupPersistence();
+        setUpStaging();
 
         //TODO: Create a sentinel commit for initial commit???
-
         Commit init = new Commit("initial commit", "00:00:00 UTC, Thursday, 1 January 1970");
-        setupPersistence();
 
         //new head object
         Head headobject = new Head(init.getSHA1());
-
         //serialize head object
         headobject.save();
-
         //save commit to commit object directory
         saveCommit(init, COMMITS_OBJECT);
     }
+
 
     public static void commit(String message) throws IOException {
 
@@ -142,13 +141,33 @@ public class Repository implements Serializable {
             System.out.println("File does not exist.");
             return;
         }
-        //checks if staging area contains file
-        if (!additionTree.containsKey(file_name)) {
+        File newFile = join(".", file_name);
+        byte[] newFileContent = readObject(newFile, byte[].class);
+        String newFileSHA1 = sha1(newFileContent);
+
+        /* checks if file content matches the Head commit file version
+         */
+        Commit commit = Head.load();
+        if (commit.getSnapshot().containsKey("file_name")) {
+            if (commit.getSnapshot().get(file_name).equals(newFileSHA1)) {
+                System.out.println("File version is same as current commit");
+                return;
+            }
+        }
+
+        TreeMap<String, String> currAddition = Staging.loadAddition();
+        TreeMap<String, String> currRemoval = Staging.loadRemoval();
+
+        /*checks if staging area contains file, this runs
+        if the file is new! */
+        if (!currAddition.containsKey(file_name)) {
             addHelper(file_name);
             return;
         }
 
-        //checks if staging area has a duplicate
+        /* checks if staging area has a duplicate, this runs
+        if there is a duplicate file name, and it will check if
+        file content needs to be updated. */
         if (!checkDuplicate(file_name)) {
             /* file have different content, remove old file, create new blob */
             removeFile(file_name);
