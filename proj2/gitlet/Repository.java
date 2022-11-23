@@ -76,22 +76,29 @@ public class Repository implements Serializable {
         Commit init = new Commit("initial commit", "00:00:00 UTC, Thursday, 1 January 1970");
         setupPersistence();
 
-        init.setHeadSHA1(init.getSHA1());
-        saveCommit(init, HEAD);
+        //new head object
+        Head headobject = new Head(init.getSHA1());
+
+        //serialize head object
+        headobject.save();
+
+        //save commit to commit object directory
+        saveCommit(init, COMMITS_OBJECT);
     }
 
     public static void commit(String message) throws IOException {
 
-        Commit headCommit = Head.load(new Commit("hi", "123"));
+        Commit headCommit = Head.load();
         String headCommitSHA1 = headCommit.getSHA1();
         TreeMap<String, String> snapshot = headCommit.getSnapshot();
         updateSnapshot();
 
         Commit newCommit = new Commit(message, headCommitSHA1, snapshot);
-
-        Head.updateHead(newCommit);
-        //Head.deleteHead(Commit.getHeadSHA1());
-
+        //new head object
+        Head headobject = new Head(newCommit.getSHA1());
+        //serialize head object
+        headobject.save();
+        //save commit to commit object directory
         serializeAndHash(newCommit, COMMITS_OBJECT);
     }
 
@@ -100,7 +107,7 @@ public class Repository implements Serializable {
      */
     public static void updateSnapshot() {
 
-        Commit headCommit = Head.load(new Commit("sda", "123"));
+        Commit headCommit = Head.load();
         TreeMap<String, String> snapshot = headCommit.getSnapshot();
         TreeMap<String, String> stagingFiles = additionTree;
         snapshot.putAll(stagingFiles);
@@ -135,7 +142,7 @@ public class Repository implements Serializable {
             System.out.println("File does not exist.");
             return;
         }
-        //checks if stating area contains file
+        //checks if staging area contains file
         if (!additionTree.containsKey(file_name)) {
             addHelper(file_name);
             return;

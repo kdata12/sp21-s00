@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static gitlet.Repository.HEAD;
-import static gitlet.Repository.serializeAndHash;
+import static gitlet.Repository.*;
 import static gitlet.Staging.*;
 import static gitlet.Utils.*;
 import static gitlet.Utils.plainFilenamesIn;
@@ -21,28 +20,38 @@ import static gitlet.Utils.plainFilenamesIn;
  *  the Head directory: retrieve information from
  *  the Head commit, and updating the Head commit.
  */
-public class Head implements Serializable{
+public class Head implements Serializable {
+    private String headSHA1;
 
-    public void saveHead(){
-
+    public Head(String commitSHA1) {
+        this.headSHA1 = commitSHA1;
     }
 
-    /** Load the commit object from head directory
-     * ex. Head.load() -> return Commit
+    public void save() {
+        File headfile = join(HEAD, "Head");
+        writeObject(headfile, this);
+    }
+
+    /**
+     * Method for loading the Head Commit object from 'Head' file.
+     * The commits are stored inside COMMITS_OBJECTS, we can find
+     * the head commit using the stored SHA1.
+     * @return Commit
      */
-    public static Commit load(Commit c) {
-        File commit = join(HEAD, c.getHeadSHA1());
+    public static Commit load() {
+        Head headObject = Head.loadHead();
+        String headSHA1 = headObject.getHeadSHA1();
+
+        File commit = join(COMMITS_OBJECT, headSHA1);
         return readObject(commit, Commit.class);
     }
 
-    public static void updateHead(Commit commit) {
-        File currHead = join(HEAD, commit.getHeadSHA1());
-        writeContents(currHead, commit);
+    public static Head loadHead () {
+        File headfile = join(HEAD, "Head");
+        return readObject(headfile, Head.class);
     }
 
-    public static void deleteHead(String currHeadSHA1, Commit commit) {
-        File currHead = join(HEAD, currHeadSHA1);
-        writeObject(currHead, commit);
+    public String getHeadSHA1() {
+        return headSHA1;
     }
-
 }

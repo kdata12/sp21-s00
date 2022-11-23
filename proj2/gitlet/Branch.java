@@ -1,9 +1,21 @@
 package gitlet;
 
+/** Represent a branch, a sequence of commit nodes
+ *  that has diverged from a parent node. A branch
+ *  can be seen as a pointer.
+ */
 public class Branch {
-    public String headSHA1;
+    private String name;
 
-    public Branch(String SHA1){
-        this.headSHA1 = SHA1;
+    private Commit head;
+
+    public Branch(String name, Commit commit) {
+        this.name = name;
+        this.head = commit;
+
     }
+
+
+
+
 }

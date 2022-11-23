@@ -44,7 +44,7 @@ public class Commit implements Serializable {
      *  SHA-1 of blob */
     private TreeMap<String, String> snapshot;
 
-    public String headSHA1;
+    public static String headSHA1;
 
 
 
@@ -105,12 +105,12 @@ public class Commit implements Serializable {
      *  the class's Head commit SHA1.
      * @param SHA1
      */
-    public void setHeadSHA1(String SHA1) {
-        this.headSHA1 = SHA1;
+    public static void setHeadSHA1(String SHA1) {
+        headSHA1 = SHA1;
     }
 
-    public String getHeadSHA1() {
-        return this.headSHA1;
+    public static String getHeadSHA1() {
+        return headSHA1;
     }
 
     public String getSHA1() {
