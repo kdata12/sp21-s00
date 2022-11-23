@@ -98,7 +98,7 @@ public class Repository implements Serializable {
         //serialize head object
         headobject.save();
         //save commit to commit object directory
-        serializeAndHash(newCommit, COMMITS_OBJECT);
+        saveCommit(newCommit, COMMITS_OBJECT);
     }
 
     /** Updates the current snapshot using staging files mapping if
@@ -142,7 +142,7 @@ public class Repository implements Serializable {
             return;
         }
         File newFile = join(".", file_name);
-        byte[] newFileContent = readObject(newFile, byte[].class);
+        byte[] newFileContent = readContents(newFile);
         String newFileSHA1 = sha1(newFileContent);
 
         /* checks if file content matches the Head commit file version

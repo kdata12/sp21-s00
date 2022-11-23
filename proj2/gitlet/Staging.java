@@ -43,10 +43,15 @@ public class Staging implements Serializable{
         byte[] fileContent = Utils.readContents(Utils.join(".", fileName));
         String fileSHA1 = sha1(fileContent);
 
-        //checks if staged file's SHA1 is the same as this file's SHA1
-        if (additionTree.get(fileName).equals(fileSHA1)) {
+        TreeMap<String, String> currAddition = Staging.loadAddition();
+        TreeMap<String, String> currRemoval = Staging.loadRemoval();
+
+        //checks if staged file's blob is the same as this file's blob
+        if (currAddition.get(fileName).equals(fileSHA1)) {
+            //return true if content are the same
             return true;
         }
+        //return false if they have different content
         return false;
     }
 

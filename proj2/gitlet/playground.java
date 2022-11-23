@@ -24,8 +24,7 @@ public class playground {
     }
 
     public static void main(String[] args) {
-        playground p = new playground("pablo");
-        setWorld(p.name);
-        System.out.println(p.world);
+
     }
+
 }

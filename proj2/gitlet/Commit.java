@@ -33,7 +33,7 @@ public class Commit implements Serializable {
     private Date date;
 
     /** This object parent's commit's SHA1 */
-    private String[] parent;
+    private String[] parent = new String[2];
 
     private String dateString;
 
