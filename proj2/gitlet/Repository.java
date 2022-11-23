@@ -99,6 +99,8 @@ public class Repository implements Serializable {
         headobject.save();
         //save commit to commit object directory
         saveCommit(newCommit, COMMITS_OBJECT);
+        //clear staging area
+        Staging.clearAndSave();
     }
 
     /** Updates the current snapshot using staging files mapping if

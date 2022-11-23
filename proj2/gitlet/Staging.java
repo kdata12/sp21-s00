@@ -24,6 +24,7 @@ public class Staging implements Serializable{
         writeObject(STAGE_FOR_ADDITION, additionTree);
     }
 
+    /* serializes and hash removalTree to STAGE_FOR_REMOVAL folder */
     public static void saveRemovalTree(){
         writeObject(STAGE_FOR_ADDITION, removalTree);
     }
@@ -34,6 +35,23 @@ public class Staging implements Serializable{
 
     public static TreeMap<String, String> loadRemoval(){
         return readObject(STAGE_FOR_REMOVAL, TreeMap.class);
+    }
+
+    public static void saveBothTrees() {
+        saveAdditionTree();
+        saveRemovalTree();
+    }
+
+    /** After the commit command, this function will clear
+     *  the addition and removal treemap, then save it as an
+     *  empty treemap.
+     */
+    public static void clearAndSave() {
+        TreeMap<String, String> currAddition = Staging.loadAddition();
+        TreeMap<String, String> currRemoval = Staging.loadRemoval();
+        currAddition.clear();
+        currRemoval.clear();
+        Staging.saveBothTrees();
     }
 
     /** Check whether if a file in the staging area have the same content.
