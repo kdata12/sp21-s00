@@ -30,7 +30,7 @@ public class Main {
             case "readtree":
                 break;
             case "commit":
-                Repository.commit(args[1]);
+                Repository.commit(args);
                 break;
             case "readSHA":
                 System.out.println(Commit.readCommitSHA1(args[1]));
@@ -39,5 +39,14 @@ public class Main {
                 System.out.println(Commit.readHEAD(args[1]));
                 break;
         }
+    }
+
+    /**
+     * Oh no, an error has occurred! Abort mission!
+     * @param message error message to send to user
+     */
+    public static void exitWithError(String message) {
+        System.out.println(message);
+        System.exit(0);
     }
 }

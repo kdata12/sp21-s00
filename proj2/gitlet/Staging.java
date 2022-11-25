@@ -77,4 +77,16 @@ public class Staging implements Serializable{
         additionTree.remove(fileName);
     }
 
+    /**
+     * Check if staging area is empty. If empty return true,
+     * otherwise return false.
+     * @return
+     */
+    public static boolean isEmpty() {
+        TreeMap<String, String> currAddition = Staging.loadAddition();
+        TreeMap<String, String> currRemoval = Staging.loadRemoval();
+
+        return currRemoval.size() == 0 && currAddition.size() == 0;
+    }
+
 }

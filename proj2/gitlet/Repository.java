@@ -85,12 +85,20 @@ public class Repository implements Serializable {
     }
 
 
-    public static void commit(String message) throws IOException {
+    public static void commit(String[] args) throws IOException {
+        String message = args[1];
+
+        if (Staging.isEmpty()) {
+            Main.exitWithError("No changes has been made to the commit.");
+        }
+
+        if (message.isEmpty() || message.isBlank()) {
+            Main.exitWithError("Please enter a commit message.");
+        }
 
         Commit headCommit = Head.load();
         String headCommitSHA1 = headCommit.getSHA1();
-        TreeMap<String, String> snapshot = headCommit.getSnapshot();
-        updateSnapshot();
+        TreeMap<String, String> snapshot = updateSnapshot();
 
         Commit newCommit = new Commit(message, headCommitSHA1, snapshot);
         //new head object
@@ -106,12 +114,28 @@ public class Repository implements Serializable {
     /** Updates the current snapshot using staging files mapping if
      * there were any changes / addition / removal made.
      */
-    public static void updateSnapshot() {
+    public static TreeMap<String, String> updateSnapshot() {
 
         Commit headCommit = Head.load();
         TreeMap<String, String> snapshot = headCommit.getSnapshot();
-        TreeMap<String, String> stagingFiles = additionTree;
-        snapshot.putAll(stagingFiles);
+        TreeMap<String, String> stagedForAdditionFiles = Staging.loadAddition();
+        TreeMap<String, String> stagedForRemovalFiles = Staging.loadRemoval();
+        /* - Add files to head commit snapshot from the staged for addition treemap.
+         * - If file have: same name, same content --> mapping stays the same
+         * - If file have: same name, different content --> name (key) will be same, content (value) will be updated
+         */
+        snapshot.putAll(stagedForAdditionFiles);
+
+        /* - Remove file from the head commit snapshot from the staged for removal treemap.
+         * - If file have: same name --> file will be removed from head commit snapshot
+         */
+        stagedForRemovalFiles.forEach((key, value) -> {
+            if (snapshot.containsKey(key)) {
+                snapshot.remove(key);
+            }
+
+        });
+        return snapshot;
     }
 
     /* This function serializes a SERIALIZABLE object, then create a SHA-1 hash
