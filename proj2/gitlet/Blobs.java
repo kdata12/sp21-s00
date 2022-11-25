@@ -47,10 +47,9 @@ public class Blobs implements Serializable {
     ex. hello.saveBlob()
      */
     public void saveBlob() throws java.io.IOException{
-        Blobs blob = new Blobs(this.fileName, this.fileContent, this.blobSHA1);
         File blobFile = new File(Repository.BLOB_FOLDER, this.getBlobSHA1());
         blobFile.createNewFile();
-        writeObject(blobFile, blob);
+        writeObject(blobFile, this);
     }
 
     /*

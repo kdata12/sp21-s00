@@ -45,10 +45,10 @@ public class Repository implements Serializable {
     /** file for storing treemap data structure that tracks file:blob */
     public static final File STAGE_FOR_ADDITION = join(STAGING_AREA, "Addition");
 
-    /** file for storing treemap data structure that tracks file:blob */
+    /** file for storing treemap data structure that tracks file name to be removed*/
     public static final File STAGE_FOR_REMOVAL = join(STAGING_AREA, "Removal");
 
-    public static final File BLOB_FOLDER = Utils.join(Repository.GITLET_DIR, "blob");
+    public static final File BLOB_FOLDER = Utils.join(OBJECTS_FOLDER, "blob");
 
 
     public static void setupPersistence() throws IOException {
@@ -165,8 +165,7 @@ public class Repository implements Serializable {
     public static void add(String file_name) throws IOException {
         //checks if file is in current working directory
         if (!plainFilenamesIn(CWD).contains(file_name)) {
-            System.out.println("File does not exist.");
-            return;
+            Main.exitWithError("File does not exist.");
         }
         File newFile = join(".", file_name);
         byte[] newFileContent = readContents(newFile);
@@ -177,8 +176,7 @@ public class Repository implements Serializable {
         Commit commit = Head.load();
         if (commit.getSnapshot().containsKey("file_name")) {
             if (commit.getSnapshot().get(file_name).equals(newFileSHA1)) {
-                System.out.println("File version is same as current commit");
-                return;
+                Main.exitWithError("File version is same as current commit");
             }
         }
 
@@ -206,8 +204,11 @@ public class Repository implements Serializable {
     private static void addHelper(String file_name) throws IOException {
         Blobs blob = new Blobs(file_name);
         blob.saveBlob();
-        additionTree.put(file_name, blob.getBlobSHA1());
-        saveAdditionTree();
+
+        // save file:blob mapping
+        TreeMap<String, String> stagedForAdditionFiles = Staging.loadAddition();
+        stagedForAdditionFiles.put(file_name, blob.getBlobSHA1());
+        Staging.saveAdditionTree();
     }
 
 }
