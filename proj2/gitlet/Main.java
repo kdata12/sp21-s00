@@ -38,6 +38,8 @@ public class Main {
             case "readHEAD":
                 System.out.println(Commit.readHEAD(args[1]));
                 break;
+            case "remove":
+                Repository.remove(args[1]);
         }
     }
 

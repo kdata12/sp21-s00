@@ -3,6 +3,7 @@ package gitlet;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -89,7 +90,7 @@ public class Repository implements Serializable {
         String message = args[1];
 
         if (Staging.isEmpty()) {
-            Main.exitWithError("No changes has been made to the commit.");
+            Main.exitWithError("No changes added to the commit.");
         }
 
         if (message.isEmpty() || message.isBlank()) {
@@ -98,7 +99,7 @@ public class Repository implements Serializable {
 
         Commit headCommit = Head.load();
         String headCommitSHA1 = headCommit.getSHA1();
-        TreeMap<String, String> snapshot = updateSnapshot();
+        TreeMap<String, String> snapshot = Staging.updateSnapshot();
 
         Commit newCommit = new Commit(message, headCommitSHA1, snapshot);
         //new head object
@@ -111,31 +112,31 @@ public class Repository implements Serializable {
         Staging.clearAndSave();
     }
 
-    /** Updates the current snapshot using staging files mapping if
-     * there were any changes / addition / removal made.
+    /**
+     * Unstage the file if it is currently staged for addition.
+     * If the file is tracked in the current commit, stage it
+     * for removal and remove the file from the working directory
+     * if the user has not already done so (do not remove it unless
+     * it is tracked in the current commit).
+     * @param filename name of file to be removed
      */
-    public static TreeMap<String, String> updateSnapshot() {
-
+    public static void remove(String filename) {
         Commit headCommit = Head.load();
         TreeMap<String, String> snapshot = headCommit.getSnapshot();
         TreeMap<String, String> stagedForAdditionFiles = Staging.loadAddition();
-        TreeMap<String, String> stagedForRemovalFiles = Staging.loadRemoval();
-        /* - Add files to head commit snapshot from the staged for addition treemap.
-         * - If file have: same name, same content --> mapping stays the same
-         * - If file have: same name, different content --> name (key) will be same, content (value) will be updated
-         */
-        snapshot.putAll(stagedForAdditionFiles);
+        HashSet<String> stagedForRemovalFiles = Staging.loadRemoval();
 
-        /* - Remove file from the head commit snapshot from the staged for removal treemap.
-         * - If file have: same name --> file will be removed from head commit snapshot
-         */
-        stagedForRemovalFiles.forEach((key, value) -> {
-            if (snapshot.containsKey(key)) {
-                snapshot.remove(key);
-            }
+        if (stagedForAdditionFiles.containsKey(filename)) {
+            Staging.unstage(filename);
+        } else if (snapshot.containsKey(filename)) {
+            stagedForRemovalFiles.add(filename);
+            File fileToBeRemoved = join(CWD, filename);
+            Utils.restrictedDelete(fileToBeRemoved);
+        } else {
+            Main.exitWithError("No reason to remove the file.");
+        }
 
-        });
-        return snapshot;
+        Staging.saveAll();
     }
 
     /* This function serializes a SERIALIZABLE object, then create a SHA-1 hash
@@ -182,7 +183,6 @@ public class Repository implements Serializable {
         }
 
         TreeMap<String, String> currAddition = Staging.loadAddition();
-        TreeMap<String, String> currRemoval = Staging.loadRemoval();
 
         /*checks if staging area contains file, this runs
         if the file is new! */
