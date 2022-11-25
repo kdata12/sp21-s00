@@ -4,6 +4,8 @@ package gitlet;
 
 import java.io.File;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.text.spi.DateFormatProvider;
 import java.util.*;
 import java.util.Date;
@@ -30,12 +32,10 @@ public class Commit implements Serializable {
     private String message;
 
     /** The exact date of commit */
-    private Date date;
+    private String date;
 
     /** This object parent's commit's SHA1 */
     private String[] parent = new String[2];
-
-    private String dateString;
 
     /** This object's SHA1 */
     private String SHA1;
@@ -53,8 +53,7 @@ public class Commit implements Serializable {
     /** Only for init command */
     public Commit(String message, String dateString){
         this.message = message;
-        this.date = new Date();
-        this.dateString = dateString;
+        this.date = generateDate(true);
         this.snapshot = new TreeMap<>();
         this.SHA1 = giveSHA1(this);
     }
@@ -66,8 +65,7 @@ public class Commit implements Serializable {
      */
     public Commit(String message, String parent, TreeMap<String, String> snap){
         this.message = message;
-        this.date = new Date();
-        this.dateString = this.date.toString();
+        this.date = generateDate(false);
         this.parent[0] = parent;
         this.snapshot = snap;
         this.SHA1 = giveSHA1(this);
@@ -81,10 +79,6 @@ public class Commit implements Serializable {
         return this.message;
     }
 
-    public Date getDate() {
-        return this.date;
-    }
-
     public String getParent() {
         return this.parent[0];
     }
@@ -93,8 +87,16 @@ public class Commit implements Serializable {
         this.message = message;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public String getDate() {
+        return date;
+    }
+
+    public void setParent(String[] parent) {
+        this.parent = parent;
+    }
+
+    public void setSnapshot(TreeMap<String, String> snapshot) {
+        this.snapshot = snapshot;
     }
 
     public void setParent(String parent) {
@@ -160,6 +162,17 @@ public class Commit implements Serializable {
     public static Commit load(String sha1) {
         File commitFile = join(HEAD, sha1);
         return readObject(commitFile, Commit.class);
+    }
+
+    public static String generateDate(boolean initial) {
+        TimeZone tz = TimeZone.getTimeZone("MST");
+        Calendar cal = Calendar.getInstance(tz);
+        if (initial == true) {
+            cal.setTimeInMillis(0);
+        }
+        DateFormat sdf = new SimpleDateFormat("EEE LLL d HH:mm:ss y Z");
+        sdf.setTimeZone(tz);
+        return sdf.format(cal.getTime());
     }
 
 }

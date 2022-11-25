@@ -85,7 +85,55 @@ public class Repository implements Serializable {
         saveCommit(init, COMMITS_OBJECT);
     }
 
+    /* Takes in a file name and add it to the stage addition
+   treemap object in the Addition file */
+    public static void add(String file_name) throws IOException {
+        //checks if file is in current working directory
+        if (!plainFilenamesIn(CWD).contains(file_name)) {
+            Main.exitWithError("File does not exist.");
+        }
+        File newFile = join(".", file_name);
+        byte[] newFileContent = readContents(newFile);
+        String newFileSHA1 = sha1(newFileContent);
 
+        /* checks if file content matches the Head commit file version
+         */
+        Commit commit = Head.load();
+        if (commit.getSnapshot().containsKey("file_name")) {
+            if (commit.getSnapshot().get(file_name).equals(newFileSHA1)) {
+                Main.exitWithError("File version is same as current commit");
+            }
+        }
+
+        TreeMap<String, String> currAddition = Staging.loadAddition();
+
+        /*checks if staging area contains file, this runs
+        if the file is new! */
+        if (!currAddition.containsKey(file_name)) {
+            addHelper(file_name);
+            return;
+        }
+
+        /* checks if staging area has a duplicate, this runs
+        if there is a duplicate file name, and it will check if
+        file content needs to be updated. */
+        if (!checkDuplicate(file_name)) {
+            /* file have different content, remove old file, create new blob */
+            removeFile(file_name);
+            addHelper(file_name);
+        }
+    }
+
+    /**
+     * Saves a snapshot of tracked files in the current commit and staging area so they can be restored
+     * at a later time, creating a new commit. The commit is said to be tracking the saved files. By default,
+     * each commit’s snapshot of files will be exactly the same as its parent commit’s snapshot of files; it
+     * will keep versions of files exactly as they are, and not update them. A commit will only update the
+     * contents of files it is tracking that have been staged for addition at the time of commit, in which
+     * case the commit will now include the version of the file that was staged instead of the version it got from its parent.
+     * @param args commit message
+     * @throws IOException
+     */
     public static void commit(String[] args) throws IOException {
         String message = args[1];
 
@@ -160,45 +208,6 @@ public class Repository implements Serializable {
     }
 
 
-    /* Takes in a file name and add it to the stage addition
-       treemap object in the Addition file */
-    public static void add(String file_name) throws IOException {
-        //checks if file is in current working directory
-        if (!plainFilenamesIn(CWD).contains(file_name)) {
-            Main.exitWithError("File does not exist.");
-        }
-        File newFile = join(".", file_name);
-        byte[] newFileContent = readContents(newFile);
-        String newFileSHA1 = sha1(newFileContent);
-
-        /* checks if file content matches the Head commit file version
-         */
-        Commit commit = Head.load();
-        if (commit.getSnapshot().containsKey("file_name")) {
-            if (commit.getSnapshot().get(file_name).equals(newFileSHA1)) {
-                Main.exitWithError("File version is same as current commit");
-            }
-        }
-
-        TreeMap<String, String> currAddition = Staging.loadAddition();
-
-        /*checks if staging area contains file, this runs
-        if the file is new! */
-        if (!currAddition.containsKey(file_name)) {
-            addHelper(file_name);
-            return;
-        }
-
-        /* checks if staging area has a duplicate, this runs
-        if there is a duplicate file name, and it will check if
-        file content needs to be updated. */
-        if (!checkDuplicate(file_name)) {
-            /* file have different content, remove old file, create new blob */
-            removeFile(file_name);
-            addHelper(file_name);
-        }
-    }
-
     /** Takes in a file name and add it to the stage addition
      treemap object in the Addition file */
     private static void addHelper(String file_name) throws IOException {
@@ -209,6 +218,16 @@ public class Repository implements Serializable {
         TreeMap<String, String> stagedForAdditionFiles = Staging.loadAddition();
         stagedForAdditionFiles.put(file_name, blob.getBlobSHA1());
         Staging.saveAdditionTree();
+    }
+
+    /**
+     * Starting at the current head commit, display information about each commit backwards along
+     * the commit tree until the initial commit, following the first parent commit links, ignoring
+     * any second parents found in merge commits.
+     */
+    public static void log() {
+
+
     }
 
 }
